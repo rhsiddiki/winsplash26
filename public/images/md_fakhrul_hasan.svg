@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#1e293b" />
+      <stop offset="40%" stopColor="#0f172a" />
+      <stop offset="100%" stopColor="#020617" />
+    </linearGradient>
+
+    <linearGradient id="woodPanel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#451a03" />
+      <stop offset="50%" stopColor="#78350f" />
+      <stop offset="100%" stopColor="#291102" />
+    </linearGradient>
+
+    <!-- Executive Gold Gradients -->
+    <linearGradient id="goldLustre" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#d97706" />
+      <stop offset="25%" stopColor="#fef08a" />
+      <stop offset="50%" stopColor="#f59e0b" />
+      <stop offset="75%" stopColor="#fef9c3" />
+      <stop offset="100%" stopColor="#b45309" />
+    </linearGradient>
+
+    <linearGradient id="silverBlazer" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#cbd5e1" />
+      <stop offset="40%" stopColor="#94a3b8" />
+      <stop offset="75%" stopColor="#64748b" />
+      <stop offset="100%" stopColor="#475569" />
+    </linearGradient>
+
+    <linearGradient id="blackShirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#1e293b" />
+      <stop offset="60%" stopColor="#0f172a" />
+      <stop offset="100%" stopColor="#020617" />
+    </linearGradient>
+
+    <radialGradient id="skinShade" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stopColor="#f3c299" />
+      <stop offset="55%" stopColor="#dfa26b" />
+      <stop offset="90%" stopColor="#b46d3e" />
+      <stop offset="100%" stopColor="#854620" />
+    </radialGradient>
+
+    <radialGradient id="studioLighting" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.25" />
+      <stop offset="60%" stopColor="#1e40af" stopOpacity="0.05" />
+      <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background: Executive Office with Wood Wall & Golden Award -->
+  <rect width="600" height="800" fill="url(#bgGrad)" />
+  
+  <!-- Modern Wood Slats / Wall Paneling in Background -->
+  <g opacity="0.35">
+    <rect x="0" y="0" width="80" height="800" fill="url(#woodPanel)" />
+    <rect x="90" y="0" width="80" height="800" fill="url(#woodPanel)" />
+    <rect x="180" y="0" width="80" height="800" fill="url(#woodPanel)" />
+    <rect x="270" y="0" width="80" height="800" fill="url(#woodPanel)" />
+    <rect x="360" y="0" width="80" height="800" fill="url(#woodPanel)" />
+    <rect x="450" y="0" width="80" height="800" fill="url(#woodPanel)" />
+    <rect x="540" y="0" width="80" height="800" fill="url(#woodPanel)" />
+  </g>
+
+  <!-- Ambient Studio Glow -->
+  <circle cx="300" cy="280" r="320" fill="url(#studioLighting)" />
+
+  <!-- Background Leadership Award / Trophy Pillar (As seen in photo) -->
+  <g transform="translate(480, 220)" opacity="0.65">
+    <!-- Trophy Base -->
+    <rect x="10" y="140" width="60" height="30" rx="4" fill="#0f172a" stroke="url(#goldLustre)" strokeWidth="1.5" />
+    <!-- Trophy Crystal / Gold Column -->
+    <path d="M 30 140 L 40 40 L 50 140 Z" fill="url(#goldLustre)" />
+    <!-- Trophy Gold Star / Emblem -->
+    <circle cx="40" cy="32" r="16" fill="url(#goldLustre)" />
+    <polygon points="40,20 44,28 52,29 46,35 48,44 40,39 32,44 34,35 28,29 36,28" fill="#ffffff" />
+  </g>
+
+  <!-- Executive Desk Silhouette in Foreground -->
+  <rect x="0" y="680" width="600" height="120" fill="#0b1120" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
+  <line x1="0" y1="682" x2="600" y2="682" stroke="url(#goldLustre)" strokeWidth="2" opacity="0.6" />
+
+  <!-- ================= MD FAKHRUL HASAN PORTRAIT RIG ================= -->
+
+  <!-- Body / Torso / Tailored Light Grey Suit Jacket -->
+  <g id="blazer-torso">
+    <!-- Shoulder & Chest Coat Outline -->
+    <path d="M 120 480 C 130 380, 210 350, 300 350 C 390 350, 470 380, 480 480 L 520 700 L 80 700 Z" fill="url(#silverBlazer)" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+    
+    <!-- Blazer Texture Details & Shadows -->
+    <path d="M 170 420 L 260 580 L 210 700 Z" fill="#475569" opacity="0.3" />
+    <path d="M 430 420 L 340 580 L 390 700 Z" fill="#334155" opacity="0.4" />
+
+    <!-- Dark Black Dress Shirt Inside -->
+    <polygon points="250,360 350,360 300,530" fill="url(#blackShirt)" stroke="#090d16" strokeWidth="2" />
+    
+    <!-- Shirt Collar (Button-Up Open Executive V) -->
+    <path d="M 245 365 L 285 410 L 298 375 Z" fill="#0f172a" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+    <path d="M 355 365 L 315 410 L 302 375 Z" fill="#1e293b" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+
+    <!-- Tailored Blazer Lapels (Left & Right) -->
+    <path d="M 170 380 L 265 550 L 220 550 Z" fill="url(#silverBlazer)" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+    <path d="M 430 380 L 335 550 L 380 550 Z" fill="url(#silverBlazer)" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+
+    <!-- Lapel Pin: Winbridge Gold Emblem -->
+    <circle cx="210" cy="425" r="7" fill="url(#goldLustre)" stroke="#000" strokeWidth="0.5" />
+    <text x="207" y="428" fontSize="8" fontWeight="bold" fill="#000">W</text>
+
+    <!-- Chest Pocket with Silk Square -->
+    <rect x="180" y="475" width="45" height="4" rx="2" fill="#334155" />
+    <polygon points="190,475 202,455 212,475" fill="url(#goldLustre)" />
+
+    <!-- Front Jacket Button -->
+    <circle cx="300" cy="575" r="5" fill="#0f172a" stroke="url(#goldLustre)" strokeWidth="1" />
+  </g>
+
+  <!-- Neck & Throat -->
+  <g id="neck">
+    <polygon points="265,310 335,310 330,375 270,375" fill="url(#skinShade)" />
+    <!-- Neck Shadow -->
+    <path d="M 270 345 Q 300 365 330 345 L 330 375 L 270 375 Z" fill="#854620" opacity="0.45" />
+  </g>
+
+  <!-- Head & Facial Features -->
+  <g id="head">
+    <!-- Ears -->
+    <circle cx="195" cy="245" r="24" fill="url(#skinShade)" />
+    <circle cx="405" cy="245" r="24" fill="url(#skinShade)" />
+    <circle cx="195" cy="245" r="14" fill="#854620" opacity="0.3" />
+    <circle cx="405" cy="245" r="14" fill="#854620" opacity="0.3" />
+
+    <!-- Face Oval -->
+    <ellipse cx="300" cy="240" rx="95" ry="115" fill="url(#skinShade)" />
+
+    <!-- Cheek & Jawline Structure -->
+    <path d="M 215 250 Q 230 330 300 345 Q 370 330 385 250" fill="none" stroke="#854620" strokeWidth="2" opacity="0.3" />
+
+    <!-- Hair: Styled Modern Executive Dark Fade -->
+    <path d="M 195 215 C 190 140, 240 105, 300 105 C 360 105, 410 140, 405 215 C 390 165, 360 145, 300 145 C 240 145, 210 165, 195 215 Z" fill="#0f172a" />
+    <path d="M 210 155 C 250 120, 350 120, 390 155 C 370 135, 330 125, 300 125 C 270 125, 230 135, 210 155 Z" fill="#1e293b" />
+    
+    <!-- Eyebrows (Well-groomed masculine arch) -->
+    <path d="M 235 198 Q 260 190 280 198" stroke="#090d16" strokeWidth="5" strokeLinecap="round" fill="none" />
+    <path d="M 320 198 Q 340 190 365 198" stroke="#090d16" strokeWidth="5" strokeLinecap="round" fill="none" />
+
+    <!-- Eyes (Warm, intelligent, confident gaze) -->
+    <g id="eyes">
+      <!-- Left Eye -->
+      <ellipse cx="258" cy="216" rx="14" ry="10" fill="#ffffff" />
+      <circle cx="260" cy="216" r="7.5" fill="#1e293b" stroke="#090d16" strokeWidth="1" />
+      <circle cx="260" cy="216" r="3.5" fill="#000000" />
+      <circle cx="257" cy="213" r="2.5" fill="#ffffff" /> <!-- Catchlight -->
+      <path d="M 244 214 Q 258 206 272 214" stroke="#090d16" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+
+      <!-- Right Eye -->
+      <ellipse cx="342" cy="216" rx="14" ry="10" fill="#ffffff" />
+      <circle cx="340" cy="216" r="7.5" fill="#1e293b" stroke="#090d16" strokeWidth="1" />
+      <circle cx="340" cy="216" r="3.5" fill="#000000" />
+      <circle cx="337" cy="213" r="2.5" fill="#ffffff" /> <!-- Catchlight -->
+      <path d="M 328 214 Q 342 206 356 214" stroke="#090d16" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    </g>
+
+    <!-- Nose -->
+    <path d="M 300 210 L 296 254 Q 300 260 306 256" stroke="#854620" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    <ellipse cx="288" cy="254" rx="4" ry="2.5" fill="#854620" opacity="0.6" />
+    <ellipse cx="312" cy="254" rx="4" ry="2.5" fill="#854620" opacity="0.6" />
+
+    <!-- Goatee Beard & Mustache (Signature style of MD Fakhrul Hasan) -->
+    <g id="facial-hair">
+      <!-- Neat Mustache -->
+      <path d="M 276 270 Q 300 264 324 270 Q 300 278 276 270 Z" fill="#0f172a" />
+      
+      <!-- Soul Patch & Goatee Arch -->
+      <path d="M 292 288 Q 300 292 308 288 Q 300 300 292 288 Z" fill="#0f172a" />
+      
+      <!-- Chin Goatee Beard -->
+      <path d="M 268 296 C 268 340, 332 340, 332 296 C 322 330, 278 330, 268 296 Z" fill="#0f172a" />
+      <path d="M 275 304 C 280 334, 320 334, 325 304 Z" fill="#1e293b" opacity="0.8" />
+    </g>
+
+    <!-- Confident Leadership Smile -->
+    <path d="M 278 280 Q 300 296 322 280" stroke="#be123c" strokeWidth="3" strokeLinecap="round" fill="none" />
+    <!-- White Teeth Accent -->
+    <path d="M 284 282 Q 300 290 316 282" fill="#ffffff" />
+  </g>
+
+  <!-- Bottom Executive Plaque Badge -->
+  <g transform="translate(100, 710)">
+    <rect x="0" y="0" width="400" height="60" rx="16" fill="#020617" stroke="url(#goldLustre)" strokeWidth="2" />
+    <text x="200" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="url(#goldLustre)" letterSpacing="1">MD FAKHRUL HASAN</text>
+    <text x="200" y="46" textAnchor="middle" fontSize="11" fontWeight="700" fill="#93c5fd" letterSpacing="2">MANAGING DIRECTOR • WINBRIDGE TECH</text>
+  </g>
+</svg>

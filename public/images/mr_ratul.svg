@@ -1,0 +1,311 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients (Warm Event Hall with Drapes as in photo) -->
+    <linearGradient id="bgGradRatul" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#1e293b" />
+      <stop offset="40%" stopColor="#0f172a" />
+      <stop offset="100%" stopColor="#020617" />
+    </linearGradient>
+
+    <!-- Warm Golden/Beige Curtain Background -->
+    <linearGradient id="curtainBeige" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#785c44" />
+      <stop offset="30%" stopColor="#b49372" />
+      <stop offset="60%" stopColor="#8d6e53" />
+      <stop offset="100%" stopColor="#5d432e" />
+    </linearGradient>
+
+    <!-- Red Drape Accent (as seen on right side in photo) -->
+    <linearGradient id="redDrape" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#881337" />
+      <stop offset="40%" stopColor="#e11d48" />
+      <stop offset="80%" stopColor="#be123c" />
+      <stop offset="100%" stopColor="#4c0519" />
+    </linearGradient>
+
+    <!-- Skin Tones for Mr. Ratul -->
+    <radialGradient id="ratulSkin" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stopColor="#f3c8a3" />
+      <stop offset="50%" stopColor="#dfa675" />
+      <stop offset="85%" stopColor="#b57448" />
+      <stop offset="100%" stopColor="#874a26" />
+    </radialGradient>
+
+    <!-- Beige / Sand Tailored Blazer -->
+    <linearGradient id="sandBlazer" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#eee5d0" />
+      <stop offset="35%" stopColor="#d8caa8" />
+      <stop offset="70%" stopColor="#beae87" />
+      <stop offset="100%" stopColor="#988762" />
+    </linearGradient>
+
+    <!-- Charcoal Black Knitted Turtleneck -->
+    <linearGradient id="charcoalKnit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#334155" />
+      <stop offset="40%" stopColor="#1e293b" />
+      <stop offset="100%" stopColor="#0f172a" />
+    </linearGradient>
+
+    <!-- Metallic Silver Executive Watch -->
+    <linearGradient id="silverWatch" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#ffffff" />
+      <stop offset="50%" stopColor="#94a3b8" />
+      <stop offset="100%" stopColor="#475569" />
+    </linearGradient>
+
+    <!-- Gold Accent Gradients -->
+    <linearGradient id="goldHostShine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#d97706" />
+      <stop offset="30%" stopColor="#fef08a" />
+      <stop offset="70%" stopColor="#f59e0b" />
+      <stop offset="100%" stopColor="#b45309" />
+    </linearGradient>
+
+    <radialGradient id="stageGlowRatul" cx="50%" cy="35%" r="55%">
+      <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.2" />
+      <stop offset="60%" stopColor="#3b82f6" stopOpacity="0.05" />
+      <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Base Dark Canvas -->
+  <rect width="600" height="800" fill="url(#bgGradRatul)" />
+
+  <!-- Background Environment: Event Stage Drapes from the Photo -->
+  <!-- Left/Center Curtains (Beige/Tan Pleated Fabric) -->
+  <g opacity="0.6">
+    <rect x="0" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+    <rect x="70" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+    <rect x="140" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+    <rect x="210" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+    <rect x="280" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+    <rect x="350" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+    <rect x="420" y="0" width="70" height="800" fill="url(#curtainBeige)" />
+  </g>
+
+  <!-- Right Red Event Drape (as seen in photo) -->
+  <g transform="translate(480, 0)" opacity="0.75">
+    <path d="M 0 0 C 30 150, 10 400, 40 800 L 120 800 L 120 0 Z" fill="url(#redDrape)" />
+    <path d="M 40 0 C 60 200, 30 500, 60 800" stroke="#fda4af" strokeWidth="2" opacity="0.4" fill="none" />
+  </g>
+
+  <!-- Ambient Stage Spotlight Glow -->
+  <circle cx="300" cy="300" r="320" fill="url(#stageGlowRatul)" />
+
+  <!-- ================= MR. RATUL HOST PORTRAIT RIG ================= -->
+
+  <!-- Outer Wavy Hair Volume (Behind Neck & Shoulders) -->
+  <g id="hair-back">
+    <path d="M 180 210 C 160 240, 160 310, 195 330 C 190 300, 200 270, 215 250 Z" fill="#090d16" />
+    <path d="M 420 210 C 440 240, 440 310, 405 330 C 410 300, 400 270, 385 250 Z" fill="#090d16" />
+    <!-- Curls at the Nape -->
+    <circle cx="180" cy="270" r="18" fill="#0f172a" />
+    <circle cx="175" cy="300" r="16" fill="#090d16" />
+    <circle cx="420" cy="270" r="18" fill="#0f172a" />
+    <circle cx="425" cy="300" r="16" fill="#090d16" />
+  </g>
+
+  <!-- Upper Body: Tailored Sand/Beige Blazer & Knitted Turtleneck -->
+  <g id="torso-blazer">
+    <!-- Shoulder & Arms Outline -->
+    <path d="M 110 500 C 120 370, 200 340, 300 340 C 400 340, 480 370, 490 500 L 530 730 L 70 730 Z" fill="url(#sandBlazer)" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+
+    <!-- Dark Charcoal Knitted Turtleneck Body -->
+    <path d="M 230 340 L 370 340 L 330 630 L 270 630 Z" fill="url(#charcoalKnit)" stroke="#090d16" strokeWidth="2" />
+    
+    <!-- Turtleneck Knit Texture Lines -->
+    <g stroke="rgba(255,255,255,0.06)" strokeWidth="1">
+      <line x1="250" y1="360" x2="350" y2="360" />
+      <line x1="255" y1="380" x2="345" y2="380" />
+      <line x1="260" y1="400" x2="340" y2="400" />
+      <line x1="265" y1="430" x2="335" y2="430" />
+      <line x1="270" y1="460" x2="330" y2="460" />
+    </g>
+
+    <!-- Sand Blazer Lapels (Left & Right Notch) -->
+    <!-- Left Lapel -->
+    <path d="M 170 370 L 280 620 L 225 620 L 150 430 Z" fill="url(#sandBlazer)" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" />
+    <!-- Right Lapel -->
+    <path d="M 430 370 L 320 620 L 375 620 L 450 430 Z" fill="url(#sandBlazer)" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" />
+
+    <!-- Blazer Pocket Welts & Stitching -->
+    <rect x="150" y="580" width="60" height="6" rx="2" fill="#beae87" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
+    <rect x="390" y="580" width="60" height="6" rx="2" fill="#beae87" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
+
+    <!-- Center Button on Blazer -->
+    <circle cx="300" cy="635" r="7" fill="#beae87" stroke="#786644" strokeWidth="2" />
+    <circle cx="300" cy="635" r="2" fill="#554428" />
+
+    <!-- Host VIP Gold Lapel Pin -->
+    <circle cx="210" cy="420" r="7" fill="url(#goldHostShine)" stroke="#000" strokeWidth="0.5" />
+    <polygon points="210,415 212,419 216,420 213,423 214,427 210,425 206,427 207,423 204,420 208,419" fill="#ffffff" />
+  </g>
+
+  <!-- Hands / Pose (Clasping Blazer Lapels as in photo) -->
+  <g id="hands-pose">
+    <!-- Left Hand Holding Lapel -->
+    <g transform="translate(260, 600)">
+      <rect x="-15" y="-12" width="30" height="24" rx="10" fill="url(#ratulSkin)" stroke="#874a26" strokeWidth="1" />
+      <circle cx="-6" cy="0" r="4" fill="#dfa675" />
+      <circle cx="2" cy="0" r="4" fill="#dfa675" />
+      <circle cx="9" cy="0" r="4" fill="#dfa675" />
+    </g>
+
+    <!-- Right Hand Holding Lapel & Wrist Watch -->
+    <g transform="translate(340, 600)">
+      <!-- Silver Executive Wristwatch (as visible in photo) -->
+      <rect x="-8" y="10" width="22" height="12" rx="3" fill="url(#silverWatch)" stroke="#334155" strokeWidth="1" />
+      <circle cx="3" cy="16" r="6" fill="#0f172a" stroke="url(#silverWatch)" strokeWidth="1.5" />
+      <circle cx="3" cy="16" r="2" fill="#ffffff" />
+
+      <!-- Right Hand Fingers -->
+      <rect x="-12" y="-12" width="30" height="24" rx="10" fill="url(#ratulSkin)" stroke="#874a26" strokeWidth="1" />
+      <circle cx="-6" cy="0" r="4" fill="#dfa675" />
+      <circle cx="2" cy="0" r="4" fill="#dfa675" />
+      <circle cx="9" cy="0" r="4" fill="#dfa675" />
+    </g>
+
+    <!-- Sleeve Button Details on Cuffs -->
+    <g fill="#beae87" stroke="#786644" strokeWidth="0.8">
+      <circle cx="215" cy="650" r="2.5" />
+      <circle cx="222" cy="653" r="2.5" />
+      <circle cx="229" cy="656" r="2.5" />
+      <circle cx="236" cy="659" r="2.5" />
+    </g>
+  </g>
+
+  <!-- Neck with High Ribbed Turtleneck Collar -->
+  <g id="neck-turtleneck">
+    <!-- Knitted High-Neck Ribbed Collar (Matching photo) -->
+    <rect x="245" y="300" width="110" height="48" rx="12" fill="url(#charcoalKnit)" stroke="#090d16" strokeWidth="2" />
+    <g stroke="rgba(255,255,255,0.12)" strokeWidth="1.5">
+      <line x1="260" y1="302" x2="260" y2="346" />
+      <line x1="275" y1="302" x2="275" y2="346" />
+      <line x1="290" y1="302" x2="290" y2="346" />
+      <line x1="305" y1="302" x2="305" y2="346" />
+      <line x1="320" y1="302" x2="320" y2="346" />
+      <line x1="335" y1="302" x2="335" y2="346" />
+    </g>
+    <!-- Neck Shadow beneath Chin -->
+    <polygon points="260,290 340,290 330,312 270,312" fill="#090d16" opacity="0.6" />
+  </g>
+
+  <!-- ================= HEAD, HAIR, EYES, AND FULL BEARD ================= -->
+  <g id="head-ratul">
+    <!-- Ears -->
+    <g id="ears">
+      <circle cx="195" cy="225" r="22" fill="url(#ratulSkin)" />
+      <circle cx="405" cy="225" r="22" fill="url(#ratulSkin)" />
+      <circle cx="195" cy="225" r="12" fill="#874a26" opacity="0.35" />
+      <circle cx="405" cy="225" r="12" fill="#874a26" opacity="0.35" />
+    </g>
+
+    <!-- Face Oval & Jawline -->
+    <ellipse cx="300" cy="220" rx="96" ry="112" fill="url(#ratulSkin)" />
+
+    <!-- Voluminous Wavy Hair (Signature style of Mr. Ratul in photo) -->
+    <g id="ratul-hair-front">
+      <!-- Base Dark Cap -->
+      <path d="M 188 200 C 182 110, 235 80, 300 80 C 365 80, 418 110, 412 200 C 400 140, 360 115, 300 115 C 240 115, 200 140, 188 200 Z" fill="#090d16" />
+      
+      <!-- Wavy Volume & Curly Locks on Sides and Top (as seen in photo) -->
+      <!-- Left Curly Fluff over ear & temple -->
+      <path d="M 185 190 C 170 170, 175 130, 200 115 C 190 140, 195 170, 185 190 Z" fill="#0f172a" />
+      <circle cx="185" cy="155" r="16" fill="#090d16" />
+      <circle cx="178" cy="180" r="14" fill="#1e2433" />
+      <circle cx="182" cy="205" r="12" fill="#090d16" />
+
+      <!-- Right Curly Fluff over ear & temple -->
+      <path d="M 415 190 C 430 170, 425 130, 400 115 C 410 140, 405 170, 415 190 Z" fill="#0f172a" />
+      <circle cx="415" cy="155" r="16" fill="#090d16" />
+      <circle cx="422" cy="180" r="14" fill="#1e2433" />
+      <circle cx="418" cy="205" r="12" fill="#090d16" />
+
+      <!-- Top Swept-Back Curls & Hair Strands -->
+      <path d="M 210 115 C 250 85, 350 85, 390 115 C 360 98, 330 92, 300 92 C 270 92, 240 98, 210 115 Z" fill="#1e2433" />
+      <path d="M 240 95 C 270 82, 330 82, 360 95 C 340 88, 315 85, 300 85 C 285 85, 260 88, 240 95 Z" fill="#334155" opacity="0.6" />
+    </g>
+
+    <!-- Eyebrows (Distinct dark natural masculine arch) -->
+    <g id="eyebrows">
+      <path d="M 232 182 Q 260 172 284 180" stroke="#090d16" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+      <path d="M 316 180 Q 340 172 368 182" stroke="#090d16" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+    </g>
+
+    <!-- Eyes (Warm, deep, expressive almond shape with double eyelids as in photo) -->
+    <g id="eyes-ratul">
+      <!-- Left Eye -->
+      <ellipse cx="258" cy="198" rx="15" ry="10.5" fill="#ffffff" />
+      <!-- Double Eyelid Crease Line -->
+      <path d="M 242 190 Q 258 184 274 190" stroke="#874a26" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <!-- Iris & Pupil -->
+      <circle cx="260" cy="198" r="8" fill="#1e293b" stroke="#090d16" strokeWidth="1" />
+      <circle cx="260" cy="198" r="4.5" fill="#000000" />
+      <circle cx="257" cy="195" r="2.5" fill="#ffffff" /> <!-- Specular Sparkle -->
+      <!-- Eye Contour -->
+      <path d="M 243 197 Q 258 190 273 197" stroke="#090d16" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+
+      <!-- Right Eye -->
+      <ellipse cx="342" cy="198" rx="15" ry="10.5" fill="#ffffff" />
+      <!-- Double Eyelid Crease Line -->
+      <path d="M 326 190 Q 342 184 358 190" stroke="#874a26" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <!-- Iris & Pupil -->
+      <circle cx="340" cy="198" r="8" fill="#1e293b" stroke="#090d16" strokeWidth="1" />
+      <circle cx="340" cy="198" r="4.5" fill="#000000" />
+      <circle cx="337" cy="195" r="2.5" fill="#ffffff" /> <!-- Specular Sparkle -->
+      <!-- Eye Contour -->
+      <path d="M 327 197 Q 342 190 357 197" stroke="#090d16" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+    </g>
+
+    <!-- Nose (Well-defined straight bridge) -->
+    <g id="nose">
+      <path d="M 300 188 L 295 236 Q 300 242 305 238" stroke="#874a26" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <ellipse cx="286" cy="236" rx="4.5" ry="3" fill="#874a26" opacity="0.6" />
+      <ellipse cx="314" cy="236" rx="4.5" ry="3" fill="#874a26" opacity="0.6" />
+    </g>
+
+    <!-- Full Beard & Mustache (Signature groomed full beard as seen in photo) -->
+    <g id="beard-mustache">
+      <!-- Full Groomed Beard Base tracing jawline and chin -->
+      <path
+        d="M 205 220 
+           C 205 270, 225 315, 300 325 
+           C 375 315, 395 270, 395 220 
+           C 382 255, 355 295, 300 295 
+           C 245 295, 218 255, 205 220 Z"
+        fill="#090d16"
+      />
+      <path
+        d="M 215 230 
+           C 215 270, 235 305, 300 315 
+           C 365 305, 385 270, 385 230 
+           C 375 260, 350 288, 300 288 
+           C 250 288, 225 260, 215 230 Z"
+        fill="#1e2433"
+        opacity="0.8"
+      />
+
+      <!-- Mustache -->
+      <path d="M 270 250 Q 300 244 330 250 Q 300 262 270 250 Z" fill="#090d16" />
+      <path d="M 276 251 Q 300 247 324 251 Q 300 258 276 251 Z" fill="#1e2433" />
+
+      <!-- Soul Patch connecting to chin beard -->
+      <polygon points="293,268 307,268 304,282 296,282" fill="#090d16" />
+
+      <!-- Stubble Texture on Cheeks -->
+      <path d="M 218 235 Q 260 270 280 275" stroke="#090d16" strokeWidth="3" strokeDasharray="2 3" opacity="0.45" fill="none" />
+      <path d="M 382 235 Q 340 270 320 275" stroke="#090d16" strokeWidth="3" strokeDasharray="2 3" opacity="0.45" fill="none" />
+    </g>
+
+    <!-- Lips (Composed, confident expression) -->
+    <path d="M 278 262 Q 300 270 322 262" stroke="#be123c" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+    <path d="M 284 262 Q 300 266 316 262" stroke="#881337" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+  </g>
+
+  <!-- Bottom Host Plaque Plate -->
+  <g transform="translate(100, 715)">
+    <rect x="0" y="0" width="400" height="58" rx="16" fill="#020617" stroke="url(#goldHostShine)" strokeWidth="2" />
+    <text x="200" y="25" textAnchor="middle" fontSize="16" fontWeight="900" fill="url(#goldHostShine)" letterSpacing="1">MR. RATUL</text>
+    <text x="200" y="44" textAnchor="middle" fontSize="11" fontWeight="700" fill="#93c5fd" letterSpacing="2">CO-HOST &amp; MASTER OF CEREMONIES</text>
+  </g>
+</svg>

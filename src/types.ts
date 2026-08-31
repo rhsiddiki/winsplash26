@@ -24,8 +24,8 @@ export interface Presenter {
     gender: 'male' | 'female';
     skinTone: string;
     hairColor: string;
-    hairStyle: 'short' | 'stylish' | 'curly' | 'bald' | 'fade';
-    facialHair?: 'none' | 'beard' | 'stubble' | 'mustache';
+    hairStyle: 'short' | 'stylish' | 'curly' | 'bald' | 'fade' | 'ratul-wavy' | string;
+    facialHair?: 'none' | 'beard' | 'stubble' | 'mustache' | 'ratul-beard' | string;
     glasses?: boolean;
     sunglasses?: boolean;
     themeOutfit: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SlideData, OutfitTheme, HonorableGuest } from '../../types';
 import { Avatar3D } from '../Avatar3D';
@@ -19,9 +19,18 @@ import {
   Flower2,
   Calendar,
   Volume2,
+  Upload,
+  RefreshCw,
+  Loader2,
 } from 'lucide-react';
 import { soundFx } from '../../utils/soundEffects';
 import confetti from 'canvas-confetti';
+import {
+  useCustomPhotos,
+  saveStoredImage,
+  removeStoredImage,
+  processAndOptimizeImage,
+} from '../../utils/imageStorage';
 
 interface IntroHostsSlideProps {
   slide: SlideData;
@@ -34,14 +43,16 @@ export const IntroHostsSlide: React.FC<IntroHostsSlideProps> = ({
   globalOutfit,
   onPresenterOutfitChange,
 }) => {
-  // Step 1: 'kickoff' (Welcome & Event Kickoff - Guests HIDDEN)
-  // Step 2: 'honorable_guests' (Hosts thank & honor the special guests with photos & names)
+  const customPhotos = useCustomPhotos();
   const [currentStep, setCurrentStep] = useState<'kickoff' | 'honorable_guests'>('kickoff');
   const [activeHost, setActiveHost] = useState<'both' | 'rifat' | 'ratul'>('both');
   const [ovationCount, setOvationCount] = useState(0);
   const [blessingsCount, setBlessingsCount] = useState(0);
   const [editingGuestId, setEditingGuestId] = useState<string | null>(null);
   const [photoInputUrl, setPhotoInputUrl] = useState('');
+  const [uploadingGuestId, setUploadingGuestId] = useState<string | null>(null);
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState<string | null>(null);
+  const guestFileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   // Honorable Guests Data with local state for custom photo/name updates
   const [guests, setGuests] = useState<HonorableGuest[]>(() => {
@@ -137,15 +148,40 @@ export const IntroHostsSlide: React.FC<IntroHostsSlideProps> = ({
     });
   };
 
-  // Update Guest Photo URL
-  const handleSavePhotoUrl = (guestId: string) => {
+  // Upload and persist guest photo
+  const handleGuestFileUpload = async (guestId: string, file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    setUploadingGuestId(guestId);
+    try {
+      const optimizedUrl = await processAndOptimizeImage(file);
+      await saveStoredImage(`guest_${guestId}`, optimizedUrl);
+      setSaveSuccessMsg(`Photo Saved for ${guestId === 'father_md' ? 'Father of MD' : 'Father of Chairman'}!`);
+      setTimeout(() => setSaveSuccessMsg(null), 3500);
+      soundFx.playFanfare();
+    } catch (err) {
+      console.error('Error saving guest photo', err);
+    } finally {
+      setUploadingGuestId(null);
+      setEditingGuestId(null);
+    }
+  };
+
+  // Update Guest Photo URL and persist
+  const handleSavePhotoUrl = async (guestId: string) => {
     if (photoInputUrl.trim()) {
-      setGuests((prev) =>
-        prev.map((g) => (g.id === guestId ? { ...g, photoUrl: photoInputUrl.trim() } : g))
-      );
+      await saveStoredImage(`guest_${guestId}`, photoInputUrl.trim());
+      setSaveSuccessMsg('Photo Saved & Persisted!');
+      setTimeout(() => setSaveSuccessMsg(null), 3500);
     }
     setEditingGuestId(null);
     setPhotoInputUrl('');
+    soundFx.playClick();
+  };
+
+  const handleResetGuestPhoto = async (guestId: string) => {
+    await removeStoredImage(`guest_${guestId}`);
+    setSaveSuccessMsg('Reset to Default Portrait');
+    setTimeout(() => setSaveSuccessMsg(null), 2500);
     soundFx.playClick();
   };
 
@@ -393,123 +429,191 @@ export const IntroHostsSlide: React.FC<IntroHostsSlideProps> = ({
 
                 {/* 2 HONORABLE GUEST PORTRAIT CARDS WITH PHOTOS AND NAMES */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {guests.map((guest, idx) => (
-                    <motion.div
-                      key={guest.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 * idx }}
-                      className="p-5 rounded-3xl bg-gradient-to-b from-[#0e1630] via-[#080d21] to-[#040817] border-2 border-amber-400/50 shadow-[0_0_30px_rgba(245,158,11,0.2)] text-center relative overflow-hidden flex flex-col justify-between group hover:border-amber-300 transition-all"
-                    >
-                      {/* Gold Halo Glow */}
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+                  {guests.map((guest, idx) => {
+                    const customPhoto = customPhotos[`guest_${guest.id}`];
+                    const displayedPhoto = customPhoto || guest.photoUrl;
+                    const isUploadingThis = uploadingGuestId === guest.id;
 
-                      <div>
-                        {/* VIP Ribbon Badge */}
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold uppercase tracking-widest mb-3">
-                          <Crown className="w-3 h-3 text-amber-400" />
-                          <span>{guest.badge || 'Special Honorable Guest'}</span>
-                        </div>
+                    return (
+                      <motion.div
+                        key={guest.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 * idx }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                            handleGuestFileUpload(guest.id, e.dataTransfer.files[0]);
+                          }
+                        }}
+                        className="p-5 rounded-3xl bg-gradient-to-b from-[#0e1630] via-[#080d21] to-[#040817] border-2 border-amber-400/50 shadow-[0_0_30px_rgba(245,158,11,0.2)] text-center relative overflow-hidden flex flex-col justify-between group hover:border-amber-300 transition-all"
+                      >
+                        {/* Gold Halo Glow */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                        {/* GUEST PORTRAIT PHOTO WITH GOLDEN ORNAMENTAL FRAME */}
-                        <div className="relative mx-auto w-32 h-32 sm:w-36 sm:h-36 mb-3">
-                          {/* Animated Golden Radiance Ring */}
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-200 to-amber-600 animate-spin -z-10 blur-[2px] opacity-75" style={{ animationDuration: '8s' }} />
+                        <div>
+                          {/* VIP Ribbon Badge */}
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold uppercase tracking-widest mb-3">
+                            <Crown className="w-3 h-3 text-amber-400" />
+                            <span>{guest.badge || 'Special Honorable Guest'}</span>
+                          </div>
 
-                          {/* Inner Photo Container */}
-                          <div className="w-full h-full rounded-full p-1.5 bg-gradient-to-b from-amber-300 via-amber-600 to-yellow-200 shadow-[0_0_25px_rgba(245,158,11,0.6)]">
-                            <div className="w-full h-full rounded-full overflow-hidden bg-slate-950 relative border-2 border-[#050A18]">
-                              <img
-                                src={guest.photoUrl}
-                                alt={guest.name}
-                                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                                onError={(e) => {
-                                  // Graceful fallback to dignified placeholder portrait
-                                  const target = e.target as HTMLImageElement;
-                                  target.src = `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80`;
-                                }}
-                              />
+                          {/* GUEST PORTRAIT PHOTO WITH GOLDEN ORNAMENTAL FRAME */}
+                          <div className="relative mx-auto w-32 h-32 sm:w-36 sm:h-36 mb-3">
+                            {/* Animated Golden Radiance Ring */}
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-200 to-amber-600 animate-spin -z-10 blur-[2px] opacity-75" style={{ animationDuration: '8s' }} />
+
+                            {/* Inner Photo Container */}
+                            <div className="w-full h-full rounded-full p-1.5 bg-gradient-to-b from-amber-300 via-amber-600 to-yellow-200 shadow-[0_0_25px_rgba(245,158,11,0.6)]">
+                              <div className="w-full h-full rounded-full overflow-hidden bg-slate-950 relative border-2 border-[#050A18]">
+                                <img
+                                  src={displayedPhoto}
+                                  alt={guest.name}
+                                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80`;
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Floral Rosette / Garland Badge */}
+                            <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-sm shadow-xl border-2 border-amber-100">
+                              💐
                             </div>
                           </div>
 
-                          {/* Floral Rosette / Garland Badge */}
-                          <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-sm shadow-xl border-2 border-amber-100">
-                            💐
+                          {/* GUEST NAME & RELATIONSHIP */}
+                          <h4 className="text-lg sm:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-400">
+                            {guest.name}
+                          </h4>
+                          <div className="text-xs font-bold text-amber-300/90 mt-0.5 mb-2">
+                            {guest.relation}
                           </div>
-                        </div>
 
-                        {/* GUEST NAME & RELATIONSHIP */}
-                        <h4 className="text-lg sm:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-400">
-                          {guest.name}
-                        </h4>
-                        <div className="text-xs font-bold text-amber-300/90 mt-0.5 mb-2">
-                          {guest.relation}
-                        </div>
-
-                        {/* Quote & Guidance */}
-                        {guest.quote && (
-                          <div className="p-3 rounded-2xl bg-white/5 border border-amber-500/20 text-left mb-3">
-                            <p className="text-[11px] text-amber-100/90 italic font-medium leading-relaxed">
-                              "{guest.quote}"
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Blessing Points */}
-                        {guest.blessingPoints && (
-                          <ul className="text-left space-y-1 text-[10px] text-slate-300 mb-3">
-                            {guest.blessingPoints.map((pt, i) => (
-                              <li key={i} className="flex items-start gap-1.5">
-                                <span className="text-amber-400 font-bold">✦</span>
-                                <span>{pt}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-
-                      {/* Photo Customizer Trigger / Edit Mode */}
-                      <div className="pt-2 border-t border-white/10">
-                        {editingGuestId === guest.id ? (
-                          <div className="space-y-2">
-                            <input
-                              type="url"
-                              value={photoInputUrl}
-                              onChange={(e) => setPhotoInputUrl(e.target.value)}
-                              placeholder="Paste custom photo URL..."
-                              className="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-amber-400/50 text-white text-[11px] placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
-                            />
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleSavePhotoUrl(guest.id)}
-                                className="flex-1 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-[11px] transition-colors"
-                              >
-                                Save Photo
-                              </button>
-                              <button
-                                onClick={() => setEditingGuestId(null)}
-                                className="px-2.5 py-1 rounded-lg bg-white/10 text-slate-300 text-[11px]"
-                              >
-                                Cancel
-                              </button>
+                          {/* Quote & Guidance */}
+                          {guest.quote && (
+                            <div className="p-3 rounded-2xl bg-white/5 border border-amber-500/20 text-left mb-3">
+                              <p className="text-[11px] text-amber-100/90 italic font-medium leading-relaxed">
+                                "{guest.quote}"
+                              </p>
                             </div>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setEditingGuestId(guest.id);
-                              setPhotoInputUrl(guest.photoUrl || '');
+                          )}
+
+                          {/* Blessing Points */}
+                          {guest.blessingPoints && (
+                            <ul className="text-left space-y-1 text-[10px] text-slate-300 mb-3">
+                              {guest.blessingPoints.map((pt, i) => (
+                                <li key={i} className="flex items-start gap-1.5">
+                                  <span className="text-amber-400 font-bold">✦</span>
+                                  <span>{pt}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+
+                        {/* Photo Customizer Trigger / Edit Mode */}
+                        <div className="pt-2 border-t border-white/10 space-y-2">
+                          <input
+                            type="file"
+                            ref={(el) => {
+                              guestFileInputRefs.current[guest.id] = el;
                             }}
-                            className="w-full py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] text-amber-300/80 hover:text-amber-200 font-medium flex items-center justify-center gap-1 transition-colors cursor-pointer"
-                          >
-                            <Camera className="w-3 h-3" />
-                            <span>Change Photo / URL</span>
-                          </button>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                handleGuestFileUpload(guest.id, e.target.files[0]);
+                              }
+                            }}
+                            accept="image/*"
+                            className="hidden"
+                          />
+
+                          {editingGuestId === guest.id ? (
+                            <div className="space-y-2">
+                              <input
+                                type="url"
+                                value={photoInputUrl}
+                                onChange={(e) => setPhotoInputUrl(e.target.value)}
+                                placeholder="Paste custom photo URL..."
+                                className="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-amber-400/50 text-white text-[11px] placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
+                              />
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleSavePhotoUrl(guest.id)}
+                                  className="flex-1 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-[11px] transition-colors cursor-pointer"
+                                >
+                                  Save Photo URL
+                                </button>
+                                <button
+                                  onClick={() => setEditingGuestId(null)}
+                                  className="px-2.5 py-1 rounded-lg bg-white/10 text-slate-300 text-[11px] cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => guestFileInputRefs.current[guest.id]?.click()}
+                                disabled={isUploadingThis}
+                                className="flex-1 py-1.5 px-2 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/40 text-[11px] text-amber-300 font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm disabled:opacity-50"
+                              >
+                                {isUploadingThis ? (
+                                  <>
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                    <span>Saving...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Upload className="w-3 h-3" />
+                                    <span>Upload Photo</span>
+                                  </>
+                                )}
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  setEditingGuestId(guest.id);
+                                  setPhotoInputUrl(displayedPhoto || '');
+                                }}
+                                className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-[11px] text-slate-300 border border-white/10 cursor-pointer"
+                                title="Enter Image URL"
+                              >
+                                <Camera className="w-3.5 h-3.5 text-amber-400" />
+                              </button>
+
+                              {customPhoto && (
+                                <button
+                                  onClick={() => handleResetGuestPhoto(guest.id)}
+                                  className="p-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-300 border border-white/10 cursor-pointer"
+                                  title="Reset to default portrait"
+                                >
+                                  <RefreshCw className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
+
+                {saveSuccessMsg && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="text-xs font-bold text-emerald-300 flex items-center justify-center gap-1.5 bg-emerald-950/80 p-2 rounded-2xl border border-emerald-500/40 shadow-lg"
+                  >
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>{saveSuccessMsg}</span>
+                  </motion.div>
+                )}
 
                 {/* CEREMONIAL TRIBUTE & GRATITUDE ACTIONS */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">

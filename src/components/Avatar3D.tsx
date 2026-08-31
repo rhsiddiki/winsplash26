@@ -42,7 +42,7 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
   }, [action]);
 
   const { avatarConfig } = presenter;
-  const outfitData = avatarConfig.themeOutfit[currentOutfit];
+  const outfitData = avatarConfig?.themeOutfit?.[currentOutfit] as any || {};
 
   // Sizing definitions - Full Body Responsive Scale
   const sizeMap = {
@@ -80,23 +80,32 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
   let shoesColor = '#0f172a';
 
   if (currentOutfit === 'formal') {
-    topColor = outfitData.formal?.suitColor || (presenter.id === 'rifat' ? '#1e3a8a' : '#312e81');
-    topColorDark = presenter.id === 'rifat' ? '#0f172a' : '#111827';
-    innerColor = outfitData.formal?.shirtColor || '#ffffff';
-    accentColor = outfitData.formal?.tieColor || (presenter.id === 'rifat' ? '#38bdf8' : '#f59e0b');
-    pantsColor = presenter.id === 'rifat' ? '#0f172a' : '#18181b';
-    shoesColor = '#09090b';
+    if (presenter.id === 'ratul') {
+      topColor = outfitData?.suitColor || '#d8caa8'; // Sand / Beige blazer
+      topColorDark = '#988762';
+      innerColor = outfitData?.shirtColor || '#1e293b'; // Charcoal black turtleneck
+      accentColor = outfitData?.tieColor || '#d97706';
+      pantsColor = '#1e293b';
+      shoesColor = '#09090b';
+    } else {
+      topColor = outfitData?.suitColor || outfitData?.formal?.suitColor || (presenter.id === 'rifat' ? '#1e3a8a' : '#312e81');
+      topColorDark = presenter.id === 'rifat' ? '#0f172a' : '#111827';
+      innerColor = outfitData?.shirtColor || outfitData?.formal?.shirtColor || '#ffffff';
+      accentColor = outfitData?.tieColor || outfitData?.formal?.tieColor || (presenter.id === 'rifat' ? '#38bdf8' : '#f59e0b');
+      pantsColor = presenter.id === 'rifat' ? '#0f172a' : '#18181b';
+      shoesColor = '#09090b';
+    }
   } else if (currentOutfit === 'casual') {
-    topColor = outfitData.casual?.topColor || (presenter.id === 'rifat' ? '#0284c7' : '#4f46e5');
+    topColor = outfitData?.topColor || outfitData?.casual?.topColor || (presenter.id === 'rifat' ? '#0284c7' : '#0284c7');
     topColorDark = '#082f49';
-    innerColor = outfitData.casual?.bottomColor || '#1e293b';
+    innerColor = outfitData?.bottomColor || outfitData?.casual?.bottomColor || '#1e293b';
     accentColor = '#f59e0b';
     pantsColor = '#1e293b';
     shoesColor = '#f8fafc'; // Pristine white sneakers
   } else if (currentOutfit === 'festive') {
-    topColor = outfitData.festive?.costumeColor || (presenter.id === 'rifat' ? '#059669' : '#d97706');
+    topColor = outfitData?.costumeColor || outfitData?.festive?.costumeColor || (presenter.id === 'rifat' ? '#059669' : '#d97706');
     topColorDark = '#064e3b';
-    innerColor = outfitData.festive?.accentColor || '#fbbf24';
+    innerColor = outfitData?.accentColor || outfitData?.festive?.accentColor || '#fbbf24';
     accentColor = '#ec4899';
     pantsColor = '#0f172a';
     shoesColor = '#b45309';
@@ -106,6 +115,8 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
   const auraGlow =
     presenter.id === 'rifat'
       ? 'rgba(59, 130, 246, 0.6)'
+      : presenter.id === 'ratul'
+      ? 'rgba(217, 119, 6, 0.55)'
       : 'rgba(99, 102, 241, 0.6)';
 
   return (
@@ -320,33 +331,63 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               {/* Outfit Variations */}
               {currentOutfit === 'formal' && (
                 <g id="formal-jacket-details">
-                  {/* Crisp White Shirt V-Neck */}
-                  <polygon points="100,150 140,150 120,215" fill={innerColor} />
+                  {presenter.id === 'ratul' ? (
+                    // Mr. Ratul: Signature Sand/Beige Blazer with Charcoal Ribbed Turtleneck
+                    <g id="ratul-formal-attire">
+                      {/* Charcoal Knitted Turtleneck Base */}
+                      <polygon points="96,145 144,145 120,225" fill="#1e293b" />
+                      <line x1="108" y1="150" x2="108" y2="215" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                      <line x1="116" y1="150" x2="116" y2="222" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                      <line x1="124" y1="150" x2="124" y2="222" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                      <line x1="132" y1="150" x2="132" y2="215" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
 
-                  {/* Formal Windsor Tie with Gold Bar */}
-                  <polygon
-                    points="114,155 126,155 129,235 120,248 111,235"
-                    fill={accentColor}
-                    stroke="#000"
-                    strokeWidth="0.5"
-                  />
-                  {/* Gold Tie Clip */}
-                  <line x1="113" y1="195" x2="127" y2="195" stroke={`url(#goldShine-${presenter.id})`} strokeWidth="2.5" />
+                      {/* Tailored Sand/Beige Blazer Lapels (Left & Right Notch) */}
+                      <path d="M 66 155 L 112 245 L 86 245 Z" fill={topColor} stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
+                      <path d="M 174 155 L 128 245 L 154 245 Z" fill={topColor} stroke="rgba(0,0,0,0.15)" strokeWidth="1" />
 
-                  {/* Tailored Suit Lapels (Left & Right) */}
-                  <path d="M 68 158 L 108 235 L 88 235 Z" fill={topColor} stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-                  <path d="M 172 158 L 132 235 L 152 235 Z" fill={topColor} stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                      {/* Chest Pocket Welt */}
+                      <rect x="74" y="195" width="22" height="4" rx="1" fill="#beae87" stroke="rgba(0,0,0,0.2)" strokeWidth="0.8" />
 
-                  {/* Chest Pocket & Gold Pocket Square */}
-                  <rect x="74" y="195" width="22" height="4" rx="1" fill="#090d16" />
-                  <polygon points="78,195 86,182 92,195" fill={`url(#goldShine-${presenter.id})`} />
+                      {/* Host VIP Gold Lapel Pin */}
+                      <circle cx="76" cy="175" r="3.5" fill={`url(#goldShine-${presenter.id})`} />
+                      <polygon points="76,172 77,174 80,175 78,177 78,179 76,178 74,179 74,177 72,175 75,174" fill="#ffffff" />
 
-                  {/* Winbridge Gold Lapel Pin */}
-                  <circle cx="78" cy="175" r="3.5" fill={`url(#goldShine-${presenter.id})`} />
+                      {/* Suit Jacket Front Buttons */}
+                      <circle cx="120" cy="250" r="2.5" fill="#beae87" stroke="#786644" strokeWidth="0.8" />
+                      <circle cx="120" cy="270" r="2.5" fill="#beae87" stroke="#786644" strokeWidth="0.8" />
+                    </g>
+                  ) : (
+                    // Classic Suit & Tie (Mr. Rifat / Keynote speakers)
+                    <g id="classic-suit-attire">
+                      {/* Crisp White Shirt V-Neck */}
+                      <polygon points="100,150 140,150 120,215" fill={innerColor} />
 
-                  {/* Suit Jacket Front Buttons */}
-                  <circle cx="120" cy="245" r="2.5" fill="#000000" stroke={`url(#goldShine-${presenter.id})`} strokeWidth="0.8" />
-                  <circle cx="120" cy="265" r="2.5" fill="#000000" stroke={`url(#goldShine-${presenter.id})`} strokeWidth="0.8" />
+                      {/* Formal Windsor Tie with Gold Bar */}
+                      <polygon
+                        points="114,155 126,155 129,235 120,248 111,235"
+                        fill={accentColor}
+                        stroke="#000"
+                        strokeWidth="0.5"
+                      />
+                      {/* Gold Tie Clip */}
+                      <line x1="113" y1="195" x2="127" y2="195" stroke={`url(#goldShine-${presenter.id})`} strokeWidth="2.5" />
+
+                      {/* Tailored Suit Lapels (Left & Right) */}
+                      <path d="M 68 158 L 108 235 L 88 235 Z" fill={topColor} stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                      <path d="M 172 158 L 132 235 L 152 235 Z" fill={topColor} stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+
+                      {/* Chest Pocket & Gold Pocket Square */}
+                      <rect x="74" y="195" width="22" height="4" rx="1" fill="#090d16" />
+                      <polygon points="78,195 86,182 92,195" fill={`url(#goldShine-${presenter.id})`} />
+
+                      {/* Winbridge Gold Lapel Pin */}
+                      <circle cx="78" cy="175" r="3.5" fill={`url(#goldShine-${presenter.id})`} />
+
+                      {/* Suit Jacket Front Buttons */}
+                      <circle cx="120" cy="245" r="2.5" fill="#000000" stroke={`url(#goldShine-${presenter.id})`} strokeWidth="0.8" />
+                      <circle cx="120" cy="265" r="2.5" fill="#000000" stroke={`url(#goldShine-${presenter.id})`} strokeWidth="0.8" />
+                    </g>
+                  )}
                 </g>
               )}
 
@@ -445,8 +486,16 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
                   <path d="M 188 165 Q 208 210 190 245" stroke={`url(#suitGrad-${presenter.id})`} strokeWidth="22" strokeLinecap="round" fill="none" />
                   {/* Forearm bent holding VIP agenda card / mic */}
                   <path d="M 190 245 L 138 215" stroke={`url(#suitGrad-${presenter.id})`} strokeWidth="18" strokeLinecap="round" fill="none" />
-                  {/* White Shirt Cuff */}
+                  {/* Cuff */}
                   <circle cx="140" cy="217" r="9" fill={innerColor} />
+
+                  {/* Silver Executive Wristwatch on Ratul */}
+                  <g id="ratul-wristwatch">
+                    <rect x="141" y="210" width="8" height="14" rx="2" fill="#94a3b8" stroke="#334155" strokeWidth="0.8" />
+                    <circle cx="145" cy="217" r="4.5" fill="#0f172a" stroke="#cbd5e1" strokeWidth="1" />
+                    <circle cx="145" cy="217" r="1.5" fill="#ffffff" />
+                  </g>
+
                   {/* Hand */}
                   <circle cx="136" cy="215" r="8" fill={avatarConfig.skinTone} />
 
@@ -516,6 +565,16 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
             <g id="host-neck">
               <rect x="106" y="122" width="28" height="28" rx="4" fill={avatarConfig.skinTone} />
               <rect x="106" y="122" width="28" height="28" rx="4" fill={`url(#skinGlow-${presenter.id})`} />
+              {presenter.id === 'ratul' && currentOutfit === 'formal' && (
+                // Knitted Charcoal High-Neck Turtleneck Collar
+                <g id="turtleneck-collar">
+                  <rect x="102" y="130" width="36" height="18" rx="4" fill="#1e293b" stroke="#0f172a" strokeWidth="1" />
+                  <line x1="109" y1="130" x2="109" y2="148" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                  <line x1="116" y1="130" x2="116" y2="148" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                  <line x1="123" y1="130" x2="123" y2="148" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                  <line x1="130" y1="130" x2="130" y2="148" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                </g>
+              )}
             </g>
 
             {/* ---------------------------------------------------- */}
@@ -549,25 +608,49 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               />
 
               {/* HAIR STYLES */}
-              {avatarConfig.hairStyle === 'stylish' && (
+              {(avatarConfig.hairStyle === 'ratul-wavy' || presenter.id === 'ratul') ? (
+                // Mr. Ratul's signature voluminous wavy black hair with soft side curls
+                <g id="ratul-signature-wavy-hair">
+                  {/* Back/Side Curl Clusters framing temples and neck */}
+                  <path d="M 74 88 C 68 76, 70 58, 80 50 C 74 65, 76 80, 74 88 Z" fill="#090d16" />
+                  <circle cx="74" cy="74" r="8" fill="#0f172a" />
+                  <circle cx="72" cy="86" r="7" fill="#090d16" />
+                  <circle cx="75" cy="98" r="6" fill="#1e2433" />
+
+                  <path d="M 166 88 C 172 76, 170 58, 160 50 C 166 65, 164 80, 166 88 Z" fill="#090d16" />
+                  <circle cx="166" cy="74" r="8" fill="#0f172a" />
+                  <circle cx="168" cy="86" r="7" fill="#090d16" />
+                  <circle cx="165" cy="98" r="6" fill="#1e2433" />
+
+                  {/* Main Wavy Crown Volume swept back on top */}
+                  <path
+                    d="M 76 66 C 72 30, 95 18, 120 18 C 145 18, 168 30, 164 66 C 156 46, 142 36, 120 36 C 98 36, 84 46, 76 66 Z"
+                    fill="#090d16"
+                  />
+                  <path
+                    d="M 86 48 C 100 32, 140 32, 154 48 C 144 38, 132 35, 120 35 C 108 35, 96 38, 86 48 Z"
+                    fill="#1e2433"
+                  />
+                  {/* Subtle Wave Crest Highlights */}
+                  <path d="M 96 38 Q 108 30 120 38" stroke="#334155" strokeWidth="1.5" fill="none" opacity="0.6" />
+                  <path d="M 120 38 Q 132 30 144 38" stroke="#334155" strokeWidth="1.5" fill="none" opacity="0.6" />
+                </g>
+              ) : avatarConfig.hairStyle === 'stylish' ? (
                 <path
                   d="M 78 68 C 75 34, 110 22, 160 34 C 168 50, 165 70, 160 72 C 150 48, 95 48, 80 72 Z"
                   fill={avatarConfig.hairColor}
                 />
-              )}
-              {avatarConfig.hairStyle === 'short' && (
+              ) : avatarConfig.hairStyle === 'short' ? (
                 <path
                   d="M 80 66 C 80 38, 160 38, 160 66 C 150 54, 90 54, 80 66 Z"
                   fill={avatarConfig.hairColor}
                 />
-              )}
-              {avatarConfig.hairStyle === 'fade' && (
+              ) : avatarConfig.hairStyle === 'fade' ? (
                 <path
                   d="M 82 64 C 85 34, 155 34, 158 64 C 145 50, 95 50, 82 64 Z"
                   fill={avatarConfig.hairColor}
                 />
-              )}
-              {avatarConfig.hairStyle === 'curly' && (
+              ) : avatarConfig.hairStyle === 'curly' ? (
                 <g fill={avatarConfig.hairColor}>
                   <circle cx="90" cy="48" r="14" />
                   <circle cx="110" cy="40" r="15" />
@@ -576,11 +659,11 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
                   <circle cx="82" cy="60" r="10" />
                   <circle cx="158" cy="60" r="10" />
                 </g>
-              )}
+              ) : null}
 
               {/* EYEBROWS */}
-              <path d="M 92 78 Q 104 74 112 78" stroke={avatarConfig.hairColor} strokeWidth="3.5" strokeLinecap="round" fill="none" />
-              <path d="M 128 78 Q 136 74 148 78" stroke={avatarConfig.hairColor} strokeWidth="3.5" strokeLinecap="round" fill="none" />
+              <path d="M 92 78 Q 104 73 113 77" stroke={avatarConfig.hairColor} strokeWidth="3.8" strokeLinecap="round" fill="none" />
+              <path d="M 127 77 Q 136 73 148 78" stroke={avatarConfig.hairColor} strokeWidth="3.8" strokeLinecap="round" fill="none" />
 
               {/* EYES */}
               {avatarConfig.sunglasses || (currentOutfit === 'festive' && avatarConfig.themeOutfit.festive.headwear === 'sunglasses-cool') ? (
@@ -593,13 +676,20 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
                   <line x1="128" y1="84" x2="144" y2="94" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
                 </g>
               ) : (
-                // Expressive Eyes with 3D Specular Highlight
+                // Expressive Eyes with 3D Specular Highlight & Eyelid Crease
                 <g id="avatar-eyes">
-                  <ellipse cx="102" cy="88" rx="7" ry="8" fill="#ffffff" />
-                  <ellipse cx="138" cy="88" rx="7" ry="8" fill="#ffffff" />
+                  {/* Double Eyelid Fold Line for Ratul / Realistic Hosts */}
+                  <path d="M 94 82 Q 102 78 110 82" stroke="rgba(0,0,0,0.3)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                  <path d="M 130 82 Q 138 78 146 82" stroke="rgba(0,0,0,0.3)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+
+                  <ellipse cx="102" cy="88" rx="7.5" ry="8" fill="#ffffff" />
+                  <ellipse cx="138" cy="88" rx="7.5" ry="8" fill="#ffffff" />
                   {/* Iris */}
-                  <circle cx="103" cy="88" r="4.5" fill="#1e293b" />
-                  <circle cx="137" cy="88" r="4.5" fill="#1e293b" />
+                  <circle cx="103" cy="88" r="4.8" fill="#1e293b" />
+                  <circle cx="137" cy="88" r="4.8" fill="#1e293b" />
+                  {/* Pupil */}
+                  <circle cx="103" cy="88" r="2.4" fill="#000000" />
+                  <circle cx="137" cy="88" r="2.4" fill="#000000" />
                   {/* Specular Sparkle */}
                   <circle cx="101" cy="86" r="1.8" fill="#ffffff" />
                   <circle cx="135" cy="86" r="1.8" fill="#ffffff" />
@@ -619,20 +709,50 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               <path d="M 118 92 Q 120 102 124 102" stroke="rgba(0,0,0,0.3)" strokeWidth="2" strokeLinecap="round" fill="none" />
 
               {/* FACIAL HAIR */}
-              {avatarConfig.facialHair === 'beard' && (
+              {(avatarConfig.facialHair === 'ratul-beard' || presenter.id === 'ratul') ? (
+                // Mr. Ratul's signature manicured full beard connecting with mustache & soul patch
+                <g id="ratul-full-groomed-beard">
+                  {/* Full Jawline & Chin Beard Contour */}
+                  <path
+                    d="M 82 92 
+                       C 82 124, 98 135, 120 135 
+                       C 142 135, 158 124, 158 92 
+                       C 152 118, 138 127, 120 127 
+                       C 102 127, 88 118, 82 92 Z"
+                    fill="#090d16"
+                  />
+                  <path
+                    d="M 86 96 
+                       C 86 122, 100 131, 120 131 
+                       C 140 131, 154 122, 154 96 
+                       C 148 116, 136 124, 120 124 
+                       C 104 124, 92 116, 86 96 Z"
+                    fill="#1e2433"
+                    opacity="0.85"
+                  />
+
+                  {/* Connected Mustache */}
+                  <path d="M 104 106 Q 120 102 136 106 Q 120 112 104 106 Z" fill="#090d16" />
+                  
+                  {/* Soul Patch */}
+                  <polygon points="117,114 123,114 121,123 119,123" fill="#090d16" />
+
+                  {/* Stubble Texture along cheeks */}
+                  <path d="M 88 98 Q 104 115 112 117" stroke="#090d16" strokeWidth="2" strokeDasharray="1.5 2" opacity="0.5" fill="none" />
+                  <path d="M 152 98 Q 136 115 128 117" stroke="#090d16" strokeWidth="2" strokeDasharray="1.5 2" opacity="0.5" fill="none" />
+                </g>
+              ) : avatarConfig.facialHair === 'beard' ? (
                 <path
                   d="M 88 100 C 88 132, 152 132, 152 100 C 142 125, 98 125, 88 100 Z"
                   fill={avatarConfig.hairColor}
                   opacity="0.9"
                 />
-              )}
-              {avatarConfig.facialHair === 'mustache' && (
+              ) : avatarConfig.facialHair === 'mustache' ? (
                 <path
                   d="M 106 108 Q 120 104 134 108 Q 120 114 106 108 Z"
                   fill={avatarConfig.hairColor}
                 />
-              )}
-              {avatarConfig.facialHair === 'stubble' && (
+              ) : avatarConfig.facialHair === 'stubble' ? (
                 <path
                   d="M 96 110 Q 120 130 144 110"
                   stroke={avatarConfig.hairColor}
@@ -641,7 +761,7 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
                   opacity="0.55"
                   fill="none"
                 />
-              )}
+              ) : null}
 
               {/* MOUTH (Animated Lip-Sync) */}
               {currentAction === 'speaking' ? (

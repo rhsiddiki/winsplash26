@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SlideData, OutfitTheme } from '../../types';
-import { Avatar3D } from '../Avatar3D';
+import { SpeakerStagePod } from '../SpeakerStagePod';
 import { AwardCeremonyModal } from '../AwardCeremonyModal';
 import { RetainedEmployeesWall } from '../RetainedEmployeesWall';
 import { Trophy, Users, TrendingUp, DollarSign, Briefcase, Sparkles, CheckCircle2 } from 'lucide-react';
@@ -84,19 +84,14 @@ export const CommercialSlide: React.FC<CommercialSlideProps> = ({
         />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Presenter Stage Pod */}
+          {/* Presenter Stage Pod with Picture Upload & Avatar Switcher */}
           <div className="lg:col-span-4 flex flex-col items-center">
-            <div className="p-6 rounded-3xl bg-gradient-to-br from-blue-900/20 via-[#0a1026]/90 to-[#050A18] border border-white/10 backdrop-blur-xl shadow-2xl w-full flex flex-col items-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
-              <Avatar3D
-                presenter={presenter}
-                outfitTheme={globalOutfit}
-                action="speaking"
-                size="lg"
-                showSpeechBubble={true}
-                onOutfitChange={(theme) => onPresenterOutfitChange?.(presenter.id, theme)}
-              />
-            </div>
+            <SpeakerStagePod
+              presenter={presenter}
+              globalOutfit={globalOutfit}
+              onPresenterOutfitChange={onPresenterOutfitChange}
+              defaultMode="photo"
+            />
           </div>
 
           {/* Department Stats & Milestones */}

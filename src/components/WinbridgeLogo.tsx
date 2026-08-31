@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCustomPhotos } from '../utils/imageStorage';
 
 interface WinbridgeLogoProps {
   className?: string;
@@ -13,10 +14,13 @@ export const WinbridgeLogo: React.FC<WinbridgeLogoProps> = ({
   showTagline = false,
   size = 'md',
 }) => {
-  if (customUrl) {
+  const customPhotos = useCustomPhotos();
+  const activeLogoUrl = customUrl || customPhotos['company_logo'];
+
+  if (activeLogoUrl) {
     return (
       <img
-        src={customUrl}
+        src={activeLogoUrl}
         alt="Winbridge Tech Logo"
         className={`object-contain ${className}`}
       />
