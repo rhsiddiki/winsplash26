@@ -42,8 +42,8 @@ export const SpeakerStagePod: React.FC<SpeakerStagePodProps> = ({
   size = 'lg',
   showSpeechQuote = true,
 }) => {
-  const customPhotos萃 = useCustomPhotos();
-  const customPhotoUrl = customPhotos萃[presenter.id];
+  const customPhotos = useCustomPhotos();
+  const customPhotoUrl = customPhotos[presenter.id];
 
   // View mode persistence
   const [viewMode, setViewMode] = useState<'photo' | 'avatar'>(() => {

@@ -1,0 +1,33 @@
+{
+  "entities": {
+    "CustomPhoto": {
+      "description": "Custom uploaded portrait photos and logos synchronized across devices",
+      "properties": {
+        "id": { "type": "string", "description": "Presenter or asset identifier (e.g. rifat, ratul, fakhrul, logo)" },
+        "dataUrl": { "type": "string", "description": "Base64 data URL or image URL for the presenter photo" },
+        "updatedAt": { "type": "number", "description": "Timestamp of the last photo update" }
+      },
+      "required": ["id", "dataUrl", "updatedAt"]
+    },
+    "PresentationSettings": {
+      "description": "Shared presentation settings, themes, and outfit customizations",
+      "properties": {
+        "id": { "type": "string", "description": "Settings ID (e.g. global)" },
+        "presenterOutfits": { "type": "object", "description": "Map of presenter ID to outfit theme" },
+        "globalOutfit": { "type": "string", "description": "Global outfit theme" },
+        "updatedAt": { "type": "number", "description": "Timestamp of the last settings update" }
+      },
+      "required": ["id", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "custom_photos": {
+      "description": "Public presentation photos synchronized across all viewers and editors",
+      "entity": "CustomPhoto"
+    },
+    "presentation_settings": {
+      "description": "Shared presentation settings synchronized across all viewers and editors",
+      "entity": "PresentationSettings"
+    }
+  }
+}

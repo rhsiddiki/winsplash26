@@ -94,6 +94,71 @@ export interface HonorableGuest {
   };
 }
 
+export interface HistoricalMetricRow {
+  metric: string;
+  definition: string;
+  unit: string;
+  values: { [year: string]: number | string };
+  format?: 'number' | 'currency' | 'percentage' | 'hours' | 'count' | 'text';
+  highlight?: boolean;
+  trend?: 'up' | 'down' | 'neutral';
+  source?: string;
+  owner?: string;
+  confidence?: 'Verified' | 'Estimated' | string;
+  notes?: string;
+}
+
+export interface ClientYearGroup {
+  year: string;
+  clients?: string[];
+  clientName?: string;
+  status?: string;
+  workOrderVolume?: string;
+  states?: string;
+  highlight?: string;
+  badge?: string;
+}
+
+export interface DepartmentPresenterDataset {
+  presenterId: string;
+  title: string;
+  subtitle: string;
+  badge?: string;
+  tagline?: string;
+  themeColor?: 'blue' | 'indigo' | 'emerald' | 'cyan' | 'purple' | 'amber' | 'sky';
+  metrics?: { label: string; value: string; change?: string; icon?: string }[];
+  executiveStatement?: string;
+  historicalTable?: {
+    years?: string[];
+    headers?: string[];
+    rows: HistoricalMetricRow[];
+  };
+  clientTimeline?: ClientYearGroup[];
+  keyHighlights: {
+    title: string;
+    description: string;
+    stat?: string;
+    badge?: string;
+  }[];
+  chartData?: {
+    title: string;
+    labels: string[];
+    values: number[];
+    unit: string;
+  };
+  breakdownStats?: {
+    category: string;
+    percentage: number;
+    amount: string;
+    color: string;
+  }[];
+  shoutoutBanner?: {
+    title: string;
+    description: string;
+    badge: string;
+  };
+}
+
 export interface SlideData {
   id: string;
   title: string;
@@ -105,6 +170,7 @@ export interface SlideData {
   honorableGuests?: HonorableGuest[];
   // Department specific properties
   metrics?: { label: string; value: string; change?: string; icon?: string }[];
+  presenterDatasets?: Record<string, DepartmentPresenterDataset>;
   awards?: {
     type: 'top_performer' | 'retained_employees' | 'special_appreciation';
     title: string;

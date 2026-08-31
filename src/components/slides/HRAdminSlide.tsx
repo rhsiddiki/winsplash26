@@ -30,8 +30,8 @@ export const HRAdminSlide: React.FC<HRAdminSlideProps> = ({
           <Heart className="w-3.5 h-3.5 text-blue-400" />
           SESSION 07 • PEOPLE, CULTURE & HAPPINESS
         </div>
-        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-indigo-200">
-          HR & Administration
+        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-white to-pink-200">
+          HR & Admin
         </h2>
         <p className="text-sm text-slate-400 mt-1 max-w-xl mx-auto">
           {slide.subtitle}

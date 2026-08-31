@@ -1,19 +1,43 @@
 /**
- * Persistent Image Storage Service for Winbridge Annual Presentation
- * Uses IndexedDB for unlimited capacity persistence across reloads & navigation,
- * with synchronous memory caching and automatic image optimization.
+ * Real-Time Cloud & Local Image Storage Service for Winbridge Annual Presentation
+ * Synchronizes custom photos across all PCs and devices in real-time using Firebase Firestore,
+ * with IndexedDB caching for offline resilience and instant zero-latency memory rendering.
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { db } from '../firebase';
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  onSnapshot,
+  getDocs,
+} from 'firebase/firestore';
 
 const DB_NAME = 'WinbridgePresentationDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'uploaded_photos';
+const FIRESTORE_COLLECTION = 'custom_photos';
 
 // In-memory cache for synchronous instant rendering
 const memoryCache: Record<string, string> = {};
 let isDbInitialized = false;
+let isFirestoreListening = false;
 const listeners = new Set<(photos: Record<string, string>) => void>();
+const syncStatusListeners = new Set<(status: 'synced' | 'syncing' | 'offline' | 'error') => void>();
+let currentSyncStatus: 'synced' | 'syncing' | 'offline' | 'error' = 'syncing';
+
+function setSyncStatus(status: 'synced' | 'syncing' | 'offline' | 'error') {
+  currentSyncStatus = status;
+  syncStatusListeners.forEach((listener) => {
+    try {
+      listener(status);
+    } catch (err) {
+      console.error('Error notifying sync status listener', err);
+    }
+  });
+}
 
 function notifyListeners() {
   const snapshot = { ...memoryCache };
@@ -46,9 +70,9 @@ function openDB(): Promise<IDBDatabase> {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      const dbInstance = (event.target as IDBOpenDBRequest).result;
+      if (!dbInstance.objectStoreNames.contains(STORE_NAME)) {
+        dbInstance.createObjectStore(STORE_NAME, { keyPath: 'id' });
       }
     };
 
@@ -63,56 +87,132 @@ function openDB(): Promise<IDBDatabase> {
 }
 
 /**
- * Initialize storage & preload all saved images into memory cache
+ * Save to local IndexedDB
  */
-export async function initImageStorage(): Promise<Record<string, string>> {
-  if (isDbInitialized) return { ...memoryCache };
+async function saveToIndexedDB(key: string, dataUrl: string) {
+  try {
+    const localDb = await openDB();
+    const transaction = localDb.transaction(STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.put({ id: key, dataUrl, updatedAt: Date.now() });
+  } catch (err) {
+    console.warn('Failed to save photo to IndexedDB:', err);
+  }
+}
+
+/**
+ * Delete from local IndexedDB
+ */
+async function deleteFromIndexedDB(key: string) {
+  try {
+    const localDb = await openDB();
+    const transaction = localDb.transaction(STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.delete(key);
+  } catch (err) {
+    console.warn('Failed to delete photo from IndexedDB:', err);
+  }
+}
+
+/**
+ * Setup Real-time Firestore Cloud Listener
+ */
+function setupFirestoreListener() {
+  if (isFirestoreListening || !db) return;
+  isFirestoreListening = true;
+  setSyncStatus('syncing');
 
   try {
-    // 1. Also check localStorage backup
-    if (typeof localStorage !== 'undefined') {
-      const legacyPhotos = localStorage.getItem('winbridge_custom_photos');
-      if (legacyPhotos) {
-        try {
-          const parsed = JSON.parse(legacyPhotos);
-          Object.assign(memoryCache, parsed);
-        } catch {
-          // ignore parsing error
+    const photosCol = collection(db, FIRESTORE_COLLECTION);
+    onSnapshot(
+      photosCol,
+      (snapshot) => {
+        let hasChanges = false;
+        const currentDocIds = new Set<string>();
+
+        snapshot.forEach((docSnapshot) => {
+          const data = docSnapshot.data() as { id?: string; dataUrl?: string };
+          const photoId = docSnapshot.id;
+          currentDocIds.add(photoId);
+
+          if (data && data.dataUrl) {
+            if (memoryCache[photoId] !== data.dataUrl) {
+              memoryCache[photoId] = data.dataUrl;
+              saveToIndexedDB(photoId, data.dataUrl);
+              hasChanges = true;
+            }
+          }
+        });
+
+        // Detect if any document was removed in Firestore
+        // (Only remove if we had remote keys that are no longer in Firestore)
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'removed') {
+            const removedId = change.doc.id;
+            if (memoryCache[removedId]) {
+              delete memoryCache[removedId];
+              deleteFromIndexedDB(removedId);
+              hasChanges = true;
+            }
+          }
+        });
+
+        setSyncStatus('synced');
+        if (hasChanges) {
+          notifyListeners();
         }
+      },
+      (error) => {
+        console.error('Firestore real-time sync error:', error);
+        setSyncStatus('error');
       }
+    );
+  } catch (err) {
+    console.error('Failed to setup Firestore listener:', err);
+    setSyncStatus('offline');
+  }
+}
+
+/**
+ * Initialize storage: Preloads local storage first, then connects to cloud Firestore
+ */
+export async function initImageStorage(): Promise<Record<string, string>> {
+  if (!isDbInitialized) {
+    try {
+      // 1. Load from IndexedDB for instant UI paint
+      const localDb = await openDB();
+      const transaction = localDb.transaction(STORE_NAME, 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const getAllReq = store.getAll();
+
+      await new Promise<void>((resolve) => {
+        getAllReq.onsuccess = () => {
+          const items = getAllReq.result as { id: string; dataUrl: string }[];
+          if (items && Array.isArray(items)) {
+            items.forEach((item) => {
+              if (item.id && item.dataUrl && !memoryCache[item.id]) {
+                memoryCache[item.id] = item.dataUrl;
+              }
+            });
+          }
+          resolve();
+        };
+        getAllReq.onerror = () => resolve();
+      });
+    } catch (err) {
+      console.warn('IndexedDB initial load skipped or not available', err);
     }
 
-    // 2. Load from IndexedDB
-    const db = await openDB();
-    const transaction = db.transaction(STORE_NAME, 'readonly');
-    const store = transaction.objectStore(STORE_NAME);
-    const getAllReq = store.getAll();
-
-    return new Promise((resolve) => {
-      getAllReq.onsuccess = () => {
-        const items = getAllReq.result as { id: string; dataUrl: string }[];
-        if (items && Array.isArray(items)) {
-          items.forEach((item) => {
-            if (item.id && item.dataUrl) {
-              memoryCache[item.id] = item.dataUrl;
-            }
-          });
-        }
-        isDbInitialized = true;
-        notifyListeners();
-        resolve({ ...memoryCache });
-      };
-
-      getAllReq.onerror = () => {
-        isDbInitialized = true;
-        resolve({ ...memoryCache });
-      };
-    });
-  } catch (err) {
-    console.warn('Failed to init IndexedDB, using memory/localStorage fallback', err);
     isDbInitialized = true;
-    return { ...memoryCache };
+    notifyListeners();
   }
+
+  // 2. Attach Firestore real-time sync
+  if (typeof window !== 'undefined' && db) {
+    setupFirestoreListener();
+  }
+
+  return { ...memoryCache };
 }
 
 // Auto-run init on module load in browser
@@ -121,97 +221,70 @@ if (typeof window !== 'undefined') {
 }
 
 /**
- * Save an image to IndexedDB and memory cache
+ * Save an image to memory, IndexedDB, AND Cloud Firestore
  */
 export async function saveStoredImage(key: string, dataUrl: string): Promise<void> {
+  // Update memory & local cache immediately for zero latency
   memoryCache[key] = dataUrl;
   notifyListeners();
+  setSyncStatus('syncing');
 
-  // Save to IndexedDB
-  try {
-    const db = await openDB();
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    store.put({ id: key, dataUrl, updatedAt: Date.now() });
+  // Save to local IndexedDB
+  await saveToIndexedDB(key, dataUrl);
 
-    // Also persist a lightweight backup to localStorage if size permits
+  // Sync to Cloud Firestore
+  if (db) {
     try {
-      if (typeof localStorage !== 'undefined') {
-        const keysToSave = Object.keys(memoryCache);
-        // Only keep reasonably sized subset in localStorage as safety net
-        const smallBackup: Record<string, string> = {};
-        for (const k of keysToSave) {
-          if (memoryCache[k].length < 500000) {
-            smallBackup[k] = memoryCache[k];
-          }
-        }
-        localStorage.setItem('winbridge_custom_photos', JSON.stringify(smallBackup));
-      }
-    } catch {
-      // Ignore localStorage quota errors since IndexedDB handles full storage
+      const docRef = doc(db, FIRESTORE_COLLECTION, key);
+      await setDoc(docRef, {
+        id: key,
+        dataUrl,
+        updatedAt: Date.now(),
+      });
+      setSyncStatus('synced');
+    } catch (err) {
+      console.error('Error saving image to Cloud Firestore:', err);
+      setSyncStatus('error');
     }
-  } catch (err) {
-    console.error('Error saving image to IndexedDB:', err);
   }
 }
 
 /**
- * Get image synchronously from memory cache (with fallback to storage)
+ * Get image synchronously from memory cache
  */
 export function getStoredImageSync(key: string): string | null {
   return memoryCache[key] || null;
 }
 
 /**
- * Remove an image from storage
+ * Remove an image from storage and Cloud Firestore
  */
 export async function removeStoredImage(key: string): Promise<void> {
   delete memoryCache[key];
   notifyListeners();
+  setSyncStatus('syncing');
 
-  try {
-    const db = await openDB();
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    store.delete(key);
+  await deleteFromIndexedDB(key);
 
-    if (typeof localStorage !== 'undefined') {
-      const smallBackup = { ...memoryCache };
-      localStorage.setItem('winbridge_custom_photos', JSON.stringify(smallBackup));
+  if (db) {
+    try {
+      const docRef = doc(db, FIRESTORE_COLLECTION, key);
+      await deleteDoc(docRef);
+      setSyncStatus('synced');
+    } catch (err) {
+      console.error('Error removing image from Cloud Firestore:', err);
+      setSyncStatus('error');
     }
-  } catch (err) {
-    console.error('Error removing image from IndexedDB:', err);
   }
 }
 
 /**
- * Clear all stored custom images
- */
-export async function clearAllStoredImages(): Promise<void> {
-  Object.keys(memoryCache).forEach((k) => delete memoryCache[k]);
-  notifyListeners();
-
-  try {
-    const db = await openDB();
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    store.clear();
-
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('winbridge_custom_photos');
-    }
-  } catch (err) {
-    console.error('Error clearing images from IndexedDB:', err);
-  }
-}
-
-/**
- * Optimize and compress an uploaded image file into a crisp high-res Data URL
+ * Optimize and compress an uploaded image file into a crisp high-res Data URL safe for cloud sync (<800KB)
  */
 export function processAndOptimizeImage(
   file: File,
-  maxDimension = 1400,
-  quality = 0.92
+  maxDimension = 1200,
+  quality = 0.88
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) {
@@ -228,14 +301,14 @@ export function processAndOptimizeImage(
         return;
       }
 
-      // For SVG or GIF images, preserve directly without canvas re-rasterization
-      if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
+      // For SVG or GIF images under 800KB, preserve directly
+      if ((file.type === 'image/svg+xml' || file.type === 'image/gif') && rawDataUrl.length < 800000) {
         resolve(rawDataUrl);
         return;
       }
 
       const img = new Image();
-      img.onerror = () => resolve(rawDataUrl); // Fallback to raw if decoding fails
+      img.onerror = () => resolve(rawDataUrl);
       img.onload = () => {
         try {
           let { width, height } = img;
@@ -261,14 +334,18 @@ export function processAndOptimizeImage(
             return;
           }
 
-          // Enable high-quality image smoothing
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Output high-quality image
-          const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-          const optimizedDataUrl = canvas.toDataURL(outputType, quality);
+          // Output high-quality JPEG for optimal cloud payload size
+          let optimizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+          // If still large (>800KB), perform additional compression pass
+          if (optimizedDataUrl.length > 800000) {
+            optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          }
+
           resolve(optimizedDataUrl);
         } catch {
           resolve(rawDataUrl);
@@ -282,13 +359,12 @@ export function processAndOptimizeImage(
 }
 
 /**
- * React Hook: Returns all currently stored custom images and stays live updated
+ * React Hook: Returns all currently stored custom images and stays live updated with Cloud Firestore
  */
 export function useCustomPhotos(): Record<string, string> {
   const [photos, setPhotos] = useState<Record<string, string>>(() => ({ ...memoryCache }));
 
   useEffect(() => {
-    // Initial fetch to ensure IndexedDB has loaded
     initImageStorage().then((loaded) => {
       setPhotos({ ...loaded });
     });
@@ -318,7 +394,26 @@ export function useCustomPhotos(): Record<string, string> {
 }
 
 /**
- * React Hook: Single photo binding with save and remove actions
+ * React Hook: Cloud Sync Status indicator ('synced' | 'syncing' | 'offline' | 'error')
+ */
+export function useCloudSyncStatus() {
+  const [status, setStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>(currentSyncStatus);
+
+  useEffect(() => {
+    const handleStatusChange = (newStatus: 'synced' | 'syncing' | 'offline' | 'error') => {
+      setStatus(newStatus);
+    };
+    syncStatusListeners.add(handleStatusChange);
+    return () => {
+      syncStatusListeners.delete(handleStatusChange);
+    };
+  }, []);
+
+  return status;
+}
+
+/**
+ * React Hook: Single photo binding with save and remove actions (Real-Time Cloud Synced)
  */
 export function usePresenterPhoto(presenterId: string) {
   const photos = useCustomPhotos();

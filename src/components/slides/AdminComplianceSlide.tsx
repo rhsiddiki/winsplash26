@@ -21,12 +21,12 @@ export const AdminComplianceSlide: React.FC<AdminComplianceSlideProps> = ({
     <div className="w-full max-w-7xl mx-auto space-y-6">
       {/* Title */}
       <div className="text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-[0.2em] mb-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-600/20 border border-teal-500/30 text-teal-300 text-xs font-bold uppercase tracking-[0.2em] mb-2">
+          <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
           SESSION 03 • DEPARTMENTAL MILESTONE REPORT
         </div>
-        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-indigo-200">
-          Admin, Accounts & Compliance
+        <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-white to-emerald-200">
+          Accounts & Compliance
         </h2>
         <p className="text-sm text-slate-400 mt-1 max-w-xl mx-auto">
           {slide.subtitle}

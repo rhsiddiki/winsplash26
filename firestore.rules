@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Custom photos and logos for presentation synchronization
+    match /custom_photos/{photoId} {
+      allow read, write: if true;
+    }
+    
+    // Presentation settings and outfit preferences
+    match /presentation_settings/{settingsId} {
+      allow read, write: if true;
+    }
+  }
+}

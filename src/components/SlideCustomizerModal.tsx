@@ -2,10 +2,11 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SlideData, OutfitTheme, StageEnvironment, HostTransitionType, TransitionSpeed } from '../types';
 import { ALL_PRESENTERS } from '../data/presentationData';
-import { X, Settings, Image, Sparkles, Shirt, Palette, Check, Wand2, Play, Gauge, FastForward, Upload, Camera, RefreshCw, Loader2, Trash2 } from 'lucide-react';
+import { X, Settings, Image, Sparkles, Shirt, Palette, Check, Wand2, Play, Gauge, FastForward, Upload, Camera, RefreshCw, Loader2, Trash2, Cloud, CloudCheck, Globe } from 'lucide-react';
 import { soundFx } from '../utils/soundEffects';
 import {
   useCustomPhotos,
+  useCloudSyncStatus,
   saveStoredImage,
   removeStoredImage,
   processAndOptimizeImage,
@@ -48,6 +49,7 @@ export const SlideCustomizerModal: React.FC<SlideCustomizerModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'transitions' | 'themes' | 'presenters' | 'logo'>('transitions');
   const customPhotos = useCustomPhotos();
+  const cloudSyncStatus = useCloudSyncStatus();
   const [logoInput, setLogoInput] = useState(customPhotos['company_logo'] || customLogoUrl || '');
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -421,9 +423,26 @@ export const SlideCustomizerModal: React.FC<SlideCustomizerModalProps> = ({
           {/* TAB 2: PRESENTERS LIST & CUSTOMIZATION */}
           {activeTab === 'presenters' && (
             <div className="space-y-4">
-              <p className="text-xs text-slate-400">
-                Manage presenter official portraits and avatar rigging. Uploaded photos are stored permanently in browser storage.
-              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-2xl bg-blue-950/40 border border-blue-500/20">
+                <div className="flex items-center gap-2.5">
+                  <Cloud className="w-5 h-5 text-blue-400 shrink-0" />
+                  <div>
+                    <h5 className="text-xs font-bold text-white flex items-center gap-1.5">
+                      Multi-Device Cloud Synchronization
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        cloudSyncStatus === 'synced' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
+                        cloudSyncStatus === 'syncing' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse' :
+                        'bg-slate-500/20 text-slate-300 border border-slate-500/30'
+                      }`}>
+                        {cloudSyncStatus === 'synced' ? '● Live Cloud Connected' : cloudSyncStatus === 'syncing' ? '⟳ Syncing...' : 'Offline Ready'}
+                      </span>
+                    </h5>
+                    <p className="text-[11px] text-slate-300">
+                      Photos uploaded here sync automatically to all computers and mobile devices opening the published presentation link.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               {toastMsg && (
                 <div className="p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
