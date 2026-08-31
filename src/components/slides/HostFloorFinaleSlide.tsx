@@ -116,16 +116,16 @@ export const HostFloorFinaleSlide: React.FC<HostFloorFinaleSlideProps> = ({
       </div>
 
       {/* DUAL HOSTS POD */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
         {/* Left Host */}
-        <div className="lg:col-span-3 flex flex-col items-center">
-          <div className="p-4 rounded-3xl bg-gradient-to-br from-blue-900/20 via-[#0a1026]/90 to-[#050A18] border border-white/10 backdrop-blur-xl shadow-xl w-full flex flex-col items-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl pointer-events-none" />
+        <div className="lg:col-span-3 flex flex-col items-center justify-end">
+          <div className="w-full flex flex-col items-center relative py-2">
+            <div className="absolute top-10 left-1/2 -translate-x-1/2 w-48 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none -z-10" />
             <Avatar3D
               presenter={rifat}
               outfitTheme={globalOutfit === 'formal' ? 'festive' : globalOutfit}
               action="celebrating"
-              size="md"
+              size="stage"
               showSpeechBubble={false}
               onOutfitChange={(theme) => onPresenterOutfitChange?.(rifat.id, theme)}
             />
@@ -256,14 +256,14 @@ export const HostFloorFinaleSlide: React.FC<HostFloorFinaleSlideProps> = ({
         </div>
 
         {/* Right Host */}
-        <div className="lg:col-span-3 flex flex-col items-center">
-          <div className="p-4 rounded-3xl bg-gradient-to-br from-blue-900/20 via-[#0a1026]/90 to-[#050A18] border border-white/10 backdrop-blur-xl shadow-xl w-full flex flex-col items-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none" />
+        <div className="lg:col-span-3 flex flex-col items-center justify-end">
+          <div className="w-full flex flex-col items-center relative py-2">
+            <div className="absolute top-10 left-1/2 -translate-x-1/2 w-48 h-64 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none -z-10" />
             <Avatar3D
               presenter={ratul}
               outfitTheme={globalOutfit === 'formal' ? 'festive' : globalOutfit}
               action="dancing"
-              size="md"
+              size="stage"
               showSpeechBubble={false}
               onOutfitChange={(theme) => onPresenterOutfitChange?.(ratul.id, theme)}
             />

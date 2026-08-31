@@ -4,6 +4,17 @@ export type StageEnvironment = 'oasis' | 'gala' | 'cyber' | 'sunset';
 
 export type TransitionEffect = 'cube-flip' | 'warp-portal' | 'spotlight-zoom' | 'holo-dissolve' | 'stage-pan';
 
+export type HostTransitionType = 
+  | 'auto' 
+  | 'curtains' 
+  | 'shutter' 
+  | 'watersplash' 
+  | 'magic' 
+  | 'squeegee' 
+  | 'confetti';
+
+export type TransitionSpeed = 'cinematic' | 'normal' | 'brisk';
+
 export interface Presenter {
   id: string;
   name: string;
@@ -63,6 +74,26 @@ export interface RetainedEmployee {
   badge?: string;
 }
 
+export interface HonorableGuest {
+  id: string;
+  name: string;
+  relation: string; // e.g. "Respected Father of MD Fakhrul Hasan"
+  title: string; // e.g. "Special Honorable Guest"
+  photoUrl?: string;
+  quote?: string;
+  blessingPoints?: string[];
+  badge?: string;
+  avatarConfig?: {
+    gender: 'male' | 'female';
+    skinTone: string;
+    hairColor: string;
+    hairStyle: 'short' | 'stylish' | 'curly' | 'bald' | 'fade';
+    facialHair?: 'none' | 'beard' | 'stubble' | 'mustache';
+    glasses?: boolean;
+    attire: 'royal-sherwani' | 'panjabi-garland' | 'executive-suit';
+  };
+}
+
 export interface SlideData {
   id: string;
   title: string;
@@ -71,6 +102,7 @@ export interface SlideData {
   presenters: Presenter[];
   transitionEffect: TransitionEffect;
   speechNotes?: string[];
+  honorableGuests?: HonorableGuest[];
   // Department specific properties
   metrics?: { label: string; value: string; change?: string; icon?: string }[];
   awards?: {

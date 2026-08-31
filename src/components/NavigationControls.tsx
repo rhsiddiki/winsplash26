@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { SlideData, OutfitTheme } from '../types';
+import { SlideData, OutfitTheme, HostTransitionType } from '../types';
 import { WinbridgeLogo } from './WinbridgeLogo';
 import {
   ChevronLeft,
@@ -15,6 +15,7 @@ import {
   Sparkles,
   Play,
   Pause,
+  Wand2,
 } from 'lucide-react';
 import { soundFx } from '../utils/soundEffects';
 
@@ -32,6 +33,8 @@ interface NavigationControlsProps {
   onOpenCustomizer: () => void;
   globalOutfit: OutfitTheme;
   customLogoUrl?: string;
+  hostTransitionType?: HostTransitionType;
+  onCycleHostTransition?: () => void;
 }
 
 export const NavigationControls: React.FC<NavigationControlsProps> = ({
@@ -48,7 +51,22 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
   onOpenCustomizer,
   globalOutfit,
   customLogoUrl,
+  hostTransitionType = 'auto',
+  onCycleHostTransition,
 }) => {
+  const getTransitionLabel = (t?: HostTransitionType | string) => {
+    switch (t) {
+      case 'auto': return '🔀 Host Auto-Mix';
+      case 'curtains': return '🎭 Velvet Drapes';
+      case 'shutter': return '🪟 Cyber Shutter';
+      case 'watersplash': return '🌊 Water Splash';
+      case 'magic': return '🪄 Magic Portal';
+      case 'squeegee': return '🧽 Squeegee Wipe';
+      case 'confetti': return '🎉 Confetti Cannon';
+      default: return '🔀 Host Auto-Mix';
+    }
+  };
+
   return (
     <>
       {/* TOP HEADER BAR */}
@@ -68,8 +86,18 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
           </div>
         </div>
 
-        {/* Right: Actions (Outfit theme tag, Sound, Notes, Customizer, Fullscreen) */}
+        {/* Right: Actions (Host Activity Badge, Outfit theme tag, Sound, Notes, Customizer, Fullscreen) */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Host Transition Stunt Badge */}
+          <button
+            onClick={onCycleHostTransition || onOpenCustomizer}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-600/30 to-indigo-600/30 border border-blue-400/40 hover:border-blue-400 hover:from-blue-600/50 hover:to-indigo-600/50 text-xs font-bold text-blue-200 transition-all cursor-pointer shadow-sm"
+            title="Click to cycle host slide transition stunt"
+          >
+            <Wand2 className="w-3.5 h-3.5 text-amber-300 animate-spin" />
+            <span>{getTransitionLabel(hostTransitionType)}</span>
+          </button>
+
           {/* Global Outfit Badge */}
           <button
             onClick={onOpenCustomizer}
@@ -133,17 +161,20 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
           </button>
 
           {/* Slide Dots / Timeline Pills */}
-          <div className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 overflow-x-auto py-1 px-2 no-scrollbar">
+          <div 
+            className="flex-1 flex items-center justify-start sm:justify-center gap-1 sm:gap-2 overflow-x-auto py-1 px-1 no-scrollbar [&::-webkit-scrollbar]:hidden select-none"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
             {slides.map((slide, idx) => {
               const isActive = currentSlideIndex === idx;
               return (
                 <button
                   key={slide.id}
                   onClick={() => onSelectSlide(idx)}
-                  className={`relative py-1.5 px-2.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                  className={`relative py-1.5 px-2 sm:px-2.5 md:px-3 rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 shrink-0 cursor-pointer ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] border border-blue-400/30'
-                      : 'bg-white/5 text-slate-400 hover:text-slate-200 border border-white/5 hover:border-white/10'
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] border border-blue-400/40 ring-1 ring-blue-400/50'
+                      : 'bg-white/5 text-slate-400 hover:text-slate-200 border border-white/5 hover:border-white/10 hover:bg-white/10'
                   }`}
                 >
                   <span
@@ -151,8 +182,8 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
                       isActive ? 'bg-amber-300 animate-pulse' : 'bg-slate-600'
                     }`}
                   />
-                  <span className="font-mono text-[10px] opacity-70">0{idx + 1}</span>
-                  <span className="line-clamp-1">{slide.title.split(' ')[0]}</span>
+                  <span className="font-mono text-[10px] opacity-70">{String(idx + 1).padStart(2, '0')}</span>
+                  <span className="truncate max-w-[80px] sm:max-w-[110px] md:max-w-none">{slide.title.split(' ')[0]}</span>
                 </button>
               );
             })}

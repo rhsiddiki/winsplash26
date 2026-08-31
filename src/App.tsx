@@ -5,12 +5,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { INITIAL_SLIDES } from './data/presentationData';
-import { SlideData, OutfitTheme, StageEnvironment } from './types';
+import { INITIAL_SLIDES, ALL_PRESENTERS } from './data/presentationData';
+import { SlideData, OutfitTheme, StageEnvironment, HostTransitionType, TransitionSpeed } from './types';
 import { ThreeStageCanvas } from './components/ThreeStageCanvas';
 import { NavigationControls } from './components/NavigationControls';
 import { SlidePresenterNotes } from './components/SlidePresenterNotes';
 import { SlideCustomizerModal } from './components/SlideCustomizerModal';
+import { HostSlideTransitionOverlay } from './components/HostSlideTransitionOverlay';
 
 // Slides
 import { IntroHostsSlide } from './components/slides/IntroHostsSlide';
@@ -32,6 +33,13 @@ export default function App() {
   const [currentEnv, setCurrentEnv] = useState<StageEnvironment>('oasis');
   const [customLogoUrl, setCustomLogoUrl] = useState<string>('');
 
+  // Host Slide Transition State
+  const [hostTransitionType, setHostTransitionType] = useState<HostTransitionType>('auto');
+  const [transitionSpeed, setTransitionSpeed] = useState<TransitionSpeed>('cinematic');
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [pendingSlideIndex, setPendingSlideIndex] = useState<number | null>(null);
+  const [testTransitionType, setTestTransitionType] = useState<HostTransitionType | null>(null);
+
   // UI state
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
@@ -39,27 +47,60 @@ export default function App() {
   const [isMuted, setIsMuted] = useState(false);
 
   const currentSlide = slides[currentSlideIndex] || slides[0];
+  const targetSlide = pendingSlideIndex !== null ? slides[pendingSlideIndex] || currentSlide : currentSlide;
+
+  const rifat = ALL_PRESENTERS.rifat;
+  const ratul = ALL_PRESENTERS.ratul;
+
+  // Trigger slide transition with host animation
+  const initiateSlideTransition = useCallback((targetIndex: number) => {
+    if (targetIndex === currentSlideIndex || isTransitioning) return;
+    if (targetIndex < 0 || targetIndex >= slides.length) return;
+
+    setPendingSlideIndex(targetIndex);
+    setIsTransitioning(true);
+  }, [currentSlideIndex, isTransitioning, slides.length]);
 
   const goToNextSlide = useCallback(() => {
     if (currentSlideIndex < slides.length - 1) {
-      setCurrentSlideIndex((prev) => prev + 1);
-      soundFx.playSlideTransition();
+      initiateSlideTransition(currentSlideIndex + 1);
     }
-  }, [currentSlideIndex, slides.length]);
+  }, [currentSlideIndex, slides.length, initiateSlideTransition]);
 
   const goToPrevSlide = useCallback(() => {
     if (currentSlideIndex > 0) {
-      setCurrentSlideIndex((prev) => prev - 1);
-      soundFx.playSlideTransition();
+      initiateSlideTransition(currentSlideIndex - 1);
     }
-  }, [currentSlideIndex]);
+  }, [currentSlideIndex, initiateSlideTransition]);
 
   const selectSlide = useCallback((index: number) => {
-    if (index >= 0 && index < slides.length) {
-      setCurrentSlideIndex(index);
-      soundFx.playSlideTransition();
+    initiateSlideTransition(index);
+  }, [initiateSlideTransition]);
+
+  const handleTransitionMidpoint = useCallback(() => {
+    if (pendingSlideIndex !== null) {
+      setCurrentSlideIndex(pendingSlideIndex);
     }
-  }, [slides.length]);
+  }, [pendingSlideIndex]);
+
+  const handleTransitionComplete = useCallback(() => {
+    setIsTransitioning(false);
+    setPendingSlideIndex(null);
+    setTestTransitionType(null);
+  }, []);
+
+  const handleTestTransition = (type: HostTransitionType) => {
+    setTestTransitionType(type);
+    setIsTransitioning(true);
+  };
+
+  const cycleHostTransition = () => {
+    const list: HostTransitionType[] = ['auto', 'curtains', 'shutter', 'watersplash', 'magic', 'squeegee', 'confetti'];
+    const currIdx = list.indexOf(hostTransitionType);
+    const nextType = list[(currIdx + 1) % list.length];
+    setHostTransitionType(nextType);
+    soundFx.playClick();
+  };
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -118,12 +159,17 @@ export default function App() {
           e.preventDefault();
           setIsCustomizerOpen((prev) => !prev);
           break;
+        case 't':
+        case 'T':
+          e.preventDefault();
+          cycleHostTransition();
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToNextSlide, goToPrevSlide]);
+  }, [goToNextSlide, goToPrevSlide, hostTransitionType]);
 
   // Transition variants based on transitionEffect
   const getTransitionVariants = (effect: string) => {
@@ -177,6 +223,20 @@ export default function App() {
       {/* 3D Animated Three.js Stage Background Canvas */}
       <ThreeStageCanvas environment={currentEnv} />
 
+      {/* Live Host Avatar Slide Transition Stunt Overlay */}
+      <HostSlideTransitionOverlay
+        isTransitioning={isTransitioning}
+        onMidpoint={handleTransitionMidpoint}
+        onComplete={handleTransitionComplete}
+        activityType={testTransitionType || hostTransitionType}
+        speed={transitionSpeed}
+        rifat={rifat}
+        ratul={ratul}
+        globalOutfit={globalOutfit}
+        targetSlideTitle={targetSlide.title}
+        targetSlideNumber={(pendingSlideIndex !== null ? pendingSlideIndex : currentSlideIndex) + 1}
+      />
+
       {/* Top Bar Header & Controls */}
       <NavigationControls
         slides={slides}
@@ -192,10 +252,12 @@ export default function App() {
         onOpenCustomizer={() => setIsCustomizerOpen(true)}
         globalOutfit={globalOutfit}
         customLogoUrl={customLogoUrl}
+        hostTransitionType={hostTransitionType}
+        onCycleHostTransition={cycleHostTransition}
       />
 
       {/* MAIN PRESENTATION STAGE AREA */}
-      <main className="relative z-20 flex-1 flex items-center justify-center px-4 sm:px-8 py-6 pb-28 overflow-y-auto">
+      <main className="relative z-20 flex-1 flex items-center justify-center px-4 sm:px-8 py-6 pb-28 overflow-y-auto overflow-x-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide.id}
@@ -294,6 +356,11 @@ export default function App() {
         onUpdateEnv={setCurrentEnv}
         customLogoUrl={customLogoUrl}
         onUpdateLogoUrl={setCustomLogoUrl}
+        hostTransitionType={hostTransitionType}
+        onUpdateHostTransition={setHostTransitionType}
+        onTestHostTransition={handleTestTransition}
+        transitionSpeed={transitionSpeed}
+        onUpdateTransitionSpeed={setTransitionSpeed}
       />
     </div>
   );

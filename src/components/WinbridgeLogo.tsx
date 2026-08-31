@@ -87,7 +87,7 @@ export const WinbridgeLogo: React.FC<WinbridgeLogoProps> = ({
 
       {showTagline && (
         <span className="hidden sm:inline-block text-xs font-semibold uppercase tracking-widest text-emerald-400/90 border-l border-slate-700 pl-3">
-          Annual Picnic 2025
+          Annual Picnic 2026
         </span>
       )}
     </div>

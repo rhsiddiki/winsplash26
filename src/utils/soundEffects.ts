@@ -183,6 +183,188 @@ class SoundEffectsEngine {
     noise.start(now);
   }
 
+  public playCurtainRope() {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    // Heavy velvet fabric swish & rope pulley friction
+    const bufferSize = ctx.sampleRate * 0.7;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(450, now);
+    filter.frequency.linearRampToValueAtTime(1200, now + 0.35);
+    filter.frequency.linearRampToValueAtTime(300, now + 0.7);
+    filter.Q.value = 1.5;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.25);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start(now);
+  }
+
+  public playShutterSlam() {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    // Mechanical roll down followed by metallic clank
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.linearRampToValueAtTime(60, now + 0.3);
+    oscGain.gain.setValueAtTime(0.2, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+
+    // Clank impact
+    setTimeout(() => {
+      const impactCtx = this.getAudioContext();
+      if (!impactCtx) return;
+      const t = impactCtx.currentTime;
+      const o = impactCtx.createOscillator();
+      const g = impactCtx.createGain();
+      o.type = 'square';
+      o.frequency.setValueAtTime(320, t);
+      o.frequency.exponentialRampToValueAtTime(80, t + 0.25);
+      g.gain.setValueAtTime(0.3, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      o.connect(g);
+      g.connect(impactCtx.destination);
+      o.start(t);
+      o.stop(t + 0.25);
+    }, 280);
+  }
+
+  public playWaterSplash() {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    // Water splash swoosh + bubbles
+    const bufferSize = ctx.sampleRate * 0.8;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(600, now);
+    filter.frequency.exponentialRampToValueAtTime(2800, now + 0.3);
+    filter.frequency.exponentialRampToValueAtTime(400, now + 0.8);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.35, now + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start(now);
+
+    // Bubble blips
+    [0.15, 0.25, 0.4, 0.55].forEach((d, idx) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(400 + idx * 180, now + d);
+      o.frequency.exponentialRampToValueAtTime(900 + idx * 250, now + d + 0.08);
+      g.gain.setValueAtTime(0.12, now + d);
+      g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.08);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start(now + d);
+      o.stop(now + d + 0.08);
+    });
+  }
+
+  public playMagicPortal() {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    // Cosmic arpeggio shimmer
+    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 2093.0];
+    notes.forEach((freq, idx) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq, now + idx * 0.08);
+      o.frequency.exponentialRampToValueAtTime(freq * 1.5, now + idx * 0.08 + 0.4);
+      g.gain.setValueAtTime(0.001, now + idx * 0.08);
+      g.gain.linearRampToValueAtTime(0.12, now + idx * 0.08 + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start(now + idx * 0.08);
+      o.stop(now + idx * 0.08 + 0.45);
+    });
+  }
+
+  public playSqueegeeWipe() {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    // Squeak sound
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(1400, now);
+    o.frequency.linearRampToValueAtTime(600, now + 0.15);
+    o.frequency.linearRampToValueAtTime(1800, now + 0.35);
+    g.gain.setValueAtTime(0.08, now);
+    g.gain.linearRampToValueAtTime(0.15, now + 0.15);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.start(now);
+    o.stop(now + 0.4);
+  }
+
+  public playConfettiPop() {
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.exponentialRampToValueAtTime(50, now + 0.12);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.15);
+
+    // Sparkle chime following pop
+    this.playMagicPortal();
+  }
+
   public playLaunchCountdownBeep(isHigh: boolean = false) {
     const ctx = this.getAudioContext();
     if (!ctx) return;

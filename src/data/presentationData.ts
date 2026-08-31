@@ -34,7 +34,7 @@ export const ALL_PRESENTERS: Record<string, Presenter> = {
         },
       },
     },
-    speechQuote: 'Welcome Winbridge family to our Annual Picnic 2025! Today is all about celebrating our milestones and having fun!',
+    speechQuote: 'Welcome Winbridge family to our Annual Picnic 2026! Today is all about celebrating our milestones and having fun!',
     speechPoints: [
       'Warm welcome to all team members across all branches',
       'Celebrating resilience, teamwork, and unstoppable growth',
@@ -446,7 +446,7 @@ export const ALL_PRESENTERS: Record<string, Presenter> = {
 export const INITIAL_SLIDES: SlideData[] = [
   {
     id: 'intro',
-    title: 'Winbridge Annual Picnic 2025',
+    title: 'Winbridge Annual Picnic 2026',
     subtitle: 'Connecting Horizons, Celebrating Excellence & Togetherness',
     category: 'Opening Ceremony',
     transitionEffect: 'warp-portal',
@@ -455,6 +455,54 @@ export const INITIAL_SLIDES: SlideData[] = [
       'Energetic greetings to all guests, directors, and colleagues',
       'Set celebratory upbeat picnic vibe',
       'Deep gratitude and special honor to the fathers of our MD and Chairman sitting in the front VIP gallery',
+    ],
+    honorableGuests: [
+      {
+        id: 'father_md',
+        name: 'Alhaj Md. Fakhruddin Hasan',
+        relation: 'Respected Father of Managing Director',
+        title: 'Special Honorable Guest',
+        badge: 'Foundational Pillar & Values Guide',
+        quote: 'Integrity, honest hard work, and steadfast dedication are the true currency of lasting success.',
+        photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+        blessingPoints: [
+          'Foundational inspiration & ethical guide for MD Fakhrul Hasan',
+          'Pillar of perseverance, honesty, and family values',
+          'Enduring prayers and blessings for Winbridge Tech growth',
+        ],
+        avatarConfig: {
+          gender: 'male',
+          skinTone: '#dfa675',
+          hairColor: '#e2e8f0',
+          hairStyle: 'short',
+          facialHair: 'beard',
+          glasses: true,
+          attire: 'royal-sherwani',
+        },
+      },
+      {
+        id: 'father_chairman',
+        name: 'Alhaj Khalid Noor',
+        relation: 'Respected Father of Chairman',
+        title: 'Special Honorable Guest',
+        badge: 'Guiding Light of Wisdom & Ethics',
+        quote: 'May Winbridge continuously thrive in unity, wisdom, and noble service to innovation and society.',
+        photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80',
+        blessingPoints: [
+          'Guiding mentor & wisdom inspiration for Chairman Hasib Khalid Bin Noor',
+          'Beacon of visionary patience, noble ethics, and unity',
+          'Warmest prayers and heartfelt blessings for the entire team',
+        ],
+        avatarConfig: {
+          gender: 'male',
+          skinTone: '#e2a76f',
+          hairColor: '#cbd5e1',
+          hairStyle: 'short',
+          facialHair: 'beard',
+          glasses: false,
+          attire: 'royal-sherwani',
+        },
+      },
     ],
     customSections: [
       {
@@ -488,7 +536,7 @@ export const INITIAL_SLIDES: SlideData[] = [
     ],
     customSections: [
       {
-        title: 'Vision 2025 & Beyond',
+        title: 'Vision 2026 & Beyond',
         description: 'Accelerating digital transformation and solidifying Winbridge as an industry benchmark in tech innovation.',
         badge: 'Executive Pillars',
         items: [
@@ -658,7 +706,7 @@ export const INITIAL_SLIDES: SlideData[] = [
     awards: [
       {
         type: 'special_appreciation',
-        title: 'Special Appreciation Award 2025',
+        title: 'Special Appreciation Award 2026',
         singleCandidate: {
           id: 'spec1',
           name: 'Nusrat Jahan Mim',

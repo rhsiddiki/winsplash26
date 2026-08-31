@@ -1,6 +1,8 @@
 {
   "name": "Winbridge Tech Annual Picnic 3D Presentation",
-  "description": "Interactive animated 3D presentation platform with customizable avatars, unique transitions, departmental award ceremonies, and live celebratory experiences.",
+  "description": "Winbridge Tech Picnic 2026 Presentaion slides focusing on our latest software architecture improvements and team collaboration goals.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
