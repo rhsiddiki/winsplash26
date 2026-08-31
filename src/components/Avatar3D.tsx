@@ -392,20 +392,55 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               )}
 
               {currentOutfit === 'casual' && (
-                <g id="casual-polo-details">
-                  {/* Polo Collar */}
-                  <path d="M 96 150 L 120 185 L 144 150 Z" fill="#082f49" opacity="0.6" />
-                  <polygon points="102,150 138,150 120,185" fill={innerColor} />
-                  <circle cx="120" cy="165" r="2.5" fill="#f8fafc" />
-                  <circle cx="120" cy="176" r="2.5" fill="#f8fafc" />
+                <g id="casual-outfit-details">
+                  {presenter.id === 'rifat' ? (
+                    // Mr. Rifat: Light Washed Denim Jacket with NASA Mission Patch & Crewneck
+                    <g id="rifat-casual-denim">
+                      {/* Inner White Crewneck */}
+                      <path d="M 102 150 Q 120 162 138 150 L 140 180 Q 120 190 100 180 Z" fill="#ffffff" />
+                      {/* Blue Lanyard Strap */}
+                      <path d="M 112 155 L 118 285" stroke="#2563eb" strokeWidth="2.5" />
+                      <path d="M 128 155 L 122 285" stroke="#1d4ed8" strokeWidth="2.5" />
 
-                  {/* Winbridge Shield Emblem on Left Chest */}
-                  <rect x="72" y="190" width="20" height="16" rx="3" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
-                  <text x="76" y="202" fontSize="9" fontWeight="900" fill="#ffffff">WB</text>
+                      {/* Denim Folded Collar */}
+                      <path d="M 92 148 L 108 178 L 94 184 L 78 154 Z" fill="#9ec5e8" stroke="#41739f" strokeWidth="1" />
+                      <path d="M 148 148 L 132 178 L 146 184 L 162 154 Z" fill="#9ec5e8" stroke="#41739f" strokeWidth="1" />
 
-                  {/* Sporty Athletic Side Stripes */}
-                  <path d="M 52 178 L 66 285" stroke="rgba(56,189,248,0.5)" strokeWidth="3.5" />
-                  <path d="M 188 178 L 174 285" stroke="rgba(56,189,248,0.5)" strokeWidth="3.5" />
+                      {/* NASA Chest Patch */}
+                      <g transform="translate(142, 192)">
+                        <circle cx="10" cy="10" r="9" fill="#090d16" />
+                        <circle cx="10" cy="10" r="8" fill="#1e40af" />
+                        <ellipse cx="10" cy="10" rx="7" ry="3" fill="none" stroke="#ffffff" strokeWidth="0.8" transform="rotate(-30 10 10)" />
+                        <path d="M 4 14 Q 10 4 17 6" stroke="#dc2626" strokeWidth="1.2" fill="none" />
+                        <text x="5" y="12" fontSize="5" fontWeight="900" fill="#ffffff">NASA</text>
+                      </g>
+
+                      {/* Metal Tack Buttons */}
+                      <circle cx="120" cy="205" r="2.5" fill="#94a3b8" stroke="#475569" strokeWidth="0.8" />
+                      <circle cx="120" cy="235" r="2.5" fill="#94a3b8" stroke="#475569" strokeWidth="0.8" />
+                      <circle cx="120" cy="265" r="2.5" fill="#94a3b8" stroke="#475569" strokeWidth="0.8" />
+
+                      {/* Denim Seam Golden Stitching */}
+                      <line x1="88" y1="195" x2="152" y2="195" stroke="#fef08a" strokeWidth="1" strokeDasharray="2 2" opacity="0.7" />
+                    </g>
+                  ) : (
+                    // Default Polo Shirt
+                    <g id="casual-polo-details">
+                      {/* Polo Collar */}
+                      <path d="M 96 150 L 120 185 L 144 150 Z" fill="#082f49" opacity="0.6" />
+                      <polygon points="102,150 138,150 120,185" fill={innerColor} />
+                      <circle cx="120" cy="165" r="2.5" fill="#f8fafc" />
+                      <circle cx="120" cy="176" r="2.5" fill="#f8fafc" />
+
+                      {/* Winbridge Shield Emblem on Left Chest */}
+                      <rect x="72" y="190" width="20" height="16" rx="3" fill="#0284c7" stroke="#38bdf8" strokeWidth="1" />
+                      <text x="76" y="202" fontSize="9" fontWeight="900" fill="#ffffff">WB</text>
+
+                      {/* Sporty Athletic Side Stripes */}
+                      <path d="M 52 178 L 66 285" stroke="rgba(56,189,248,0.5)" strokeWidth="3.5" />
+                      <path d="M 188 178 L 174 285" stroke="rgba(56,189,248,0.5)" strokeWidth="3.5" />
+                    </g>
+                  )}
                 </g>
               )}
 
@@ -608,7 +643,39 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               />
 
               {/* HAIR STYLES */}
-              {(avatarConfig.hairStyle === 'ratul-wavy' || presenter.id === 'ratul') ? (
+              {(avatarConfig.hairStyle === 'rifat-signature' || presenter.id === 'rifat') ? (
+                // Mr. Rifat: Signature layered textured hair with side-swept fringe across forehead
+                <g id="rifat-signature-hair">
+                  {/* Base Hair Volume */}
+                  <path
+                    d="M 76 68 C 72 32, 98 16, 120 16 C 144 16, 168 32, 164 68 C 156 46, 142 34, 120 34 C 98 34, 84 46, 76 68 Z"
+                    fill="#181517"
+                  />
+                  {/* Back/Side Taper Cluster */}
+                  <path d="M 74 76 C 70 64, 72 52, 78 44 C 74 56, 76 68, 74 76 Z" fill="#141113" />
+                  <path d="M 166 76 C 170 64, 168 52, 162 44 C 166 56, 164 68, 166 76 Z" fill="#141113" />
+                  {/* Side-Swept Layered Fringe Sweeping Across Forehead */}
+                  <path
+                    d="M 76 62
+                       C 80 44, 106 32, 126 34
+                       C 142 36, 158 48, 162 64
+                       C 152 50, 136 42, 118 44
+                       C 100 46, 88 54, 76 62 Z"
+                    fill="#282224"
+                  />
+                  {/* Distinctive Front Fringe Strand Swept to Right */}
+                  <path
+                    d="M 84 52
+                       Q 106 38, 134 46
+                       Q 116 52, 98 62
+                       Q 90 56, 84 52 Z"
+                    fill="#3d3230"
+                  />
+                  {/* Hair Texture Lines */}
+                  <path d="M 88 44 Q 108 34, 128 38" stroke="#5c4845" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.7" />
+                  <path d="M 104 38 Q 124 32, 144 38" stroke="#5c4845" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.7" />
+                </g>
+              ) : (avatarConfig.hairStyle === 'ratul-wavy' || presenter.id === 'ratul') ? (
                 // Mr. Ratul's signature voluminous wavy black hair with soft side curls
                 <g id="ratul-signature-wavy-hair">
                   {/* Back/Side Curl Clusters framing temples and neck */}
@@ -662,8 +729,18 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               ) : null}
 
               {/* EYEBROWS */}
-              <path d="M 92 78 Q 104 73 113 77" stroke={avatarConfig.hairColor} strokeWidth="3.8" strokeLinecap="round" fill="none" />
-              <path d="M 127 77 Q 136 73 148 78" stroke={avatarConfig.hairColor} strokeWidth="3.8" strokeLinecap="round" fill="none" />
+              {presenter.id === 'rifat' ? (
+                // Bold, thick, expressive arched eyebrows for Rifat
+                <g id="rifat-bold-eyebrows">
+                  <path d="M 89 77 Q 103 71 114 76" stroke="#141113" strokeWidth="4.8" strokeLinecap="round" fill="none" />
+                  <path d="M 126 76 Q 137 71 151 77" stroke="#141113" strokeWidth="4.8" strokeLinecap="round" fill="none" />
+                </g>
+              ) : (
+                <>
+                  <path d="M 92 78 Q 104 73 113 77" stroke={avatarConfig.hairColor} strokeWidth="3.8" strokeLinecap="round" fill="none" />
+                  <path d="M 127 77 Q 136 73 148 78" stroke={avatarConfig.hairColor} strokeWidth="3.8" strokeLinecap="round" fill="none" />
+                </>
+              )}
 
               {/* EYES */}
               {avatarConfig.sunglasses || (currentOutfit === 'festive' && avatarConfig.themeOutfit.festive.headwear === 'sunglasses-cool') ? (
@@ -678,15 +755,15 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               ) : (
                 // Expressive Eyes with 3D Specular Highlight & Eyelid Crease
                 <g id="avatar-eyes">
-                  {/* Double Eyelid Fold Line for Ratul / Realistic Hosts */}
+                  {/* Double Eyelid Fold Line */}
                   <path d="M 94 82 Q 102 78 110 82" stroke="rgba(0,0,0,0.3)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
                   <path d="M 130 82 Q 138 78 146 82" stroke="rgba(0,0,0,0.3)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
 
                   <ellipse cx="102" cy="88" rx="7.5" ry="8" fill="#ffffff" />
                   <ellipse cx="138" cy="88" rx="7.5" ry="8" fill="#ffffff" />
                   {/* Iris */}
-                  <circle cx="103" cy="88" r="4.8" fill="#1e293b" />
-                  <circle cx="137" cy="88" r="4.8" fill="#1e293b" />
+                  <circle cx="103" cy="88" r="4.8" fill={presenter.id === 'rifat' ? '#271b14' : '#1e293b'} />
+                  <circle cx="137" cy="88" r="4.8" fill={presenter.id === 'rifat' ? '#271b14' : '#1e293b'} />
                   {/* Pupil */}
                   <circle cx="103" cy="88" r="2.4" fill="#000000" />
                   <circle cx="137" cy="88" r="2.4" fill="#000000" />
@@ -709,7 +786,28 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
               <path d="M 118 92 Q 120 102 124 102" stroke="rgba(0,0,0,0.3)" strokeWidth="2" strokeLinecap="round" fill="none" />
 
               {/* FACIAL HAIR */}
-              {(avatarConfig.facialHair === 'ratul-beard' || presenter.id === 'ratul') ? (
+              {(avatarConfig.facialHair === 'rifat-beard' || presenter.id === 'rifat') ? (
+                // Mr. Rifat's manicured curved mustache & connected boxed chin beard / stubble
+                <g id="rifat-facial-hair">
+                  {/* Jawline Beard & Chin Contour */}
+                  <path
+                    d="M 84 94
+                       C 84 123, 98 133, 120 133
+                       C 142 133, 156 123, 156 94
+                       C 151 117, 137 125, 120 125
+                       C 103 125, 89 117, 84 94 Z"
+                    fill="#141113"
+                    opacity="0.85"
+                  />
+                  {/* Mustache Curved Neatly Over Lip */}
+                  <path d="M 103 105 Q 120 101 137 105 Q 120 111 103 105 Z" fill="#181316" />
+                  {/* Chin Soul Patch */}
+                  <polygon points="117,117 123,117 121,126 119,126" fill="#181316" />
+                  {/* Stubble Shading */}
+                  <path d="M 88 102 Q 102 118 112 119" stroke="#181316" strokeWidth="1.8" strokeDasharray="1 1.5" opacity="0.4" fill="none" />
+                  <path d="M 152 102 Q 138 118 128 119" stroke="#181316" strokeWidth="1.8" strokeDasharray="1 1.5" opacity="0.4" fill="none" />
+                </g>
+              ) : (avatarConfig.facialHair === 'ratul-beard' || presenter.id === 'ratul') ? (
                 // Mr. Ratul's signature manicured full beard connecting with mustache & soul patch
                 <g id="ratul-full-groomed-beard">
                   {/* Full Jawline & Chin Beard Contour */}
@@ -763,11 +861,31 @@ export const Avatar3D: React.FC<Avatar3DProps> = ({
                 />
               ) : null}
 
-              {/* MOUTH (Animated Lip-Sync) */}
+              {/* MOUTH & RADIANT SMILE */}
               {currentAction === 'speaking' ? (
-                <ellipse cx="120" cy="114" rx="8" ry="5" fill="#7f1d1d" stroke="#be123c" strokeWidth="1">
-                  <animate attributeName="ry" values="3;7;2;6;3" dur="0.6s" repeatCount="indefinite" />
-                </ellipse>
+                <g id="speaking-mouth">
+                  <ellipse cx="120" cy="114" rx="8" ry="5" fill="#7f1d1d" stroke="#be123c" strokeWidth="1">
+                    <animate attributeName="ry" values="3;7;2;6;3" dur="0.6s" repeatCount="indefinite" />
+                  </ellipse>
+                  {/* Upper Teeth in Speaking Mode */}
+                  <rect x="115" y="110" width="10" height="2.5" rx="1" fill="#ffffff" />
+                </g>
+              ) : presenter.id === 'rifat' ? (
+                // Mr. Rifat's characteristic radiant wide beaming white smile
+                <g id="rifat-radiant-smile">
+                  {/* Oral cavity */}
+                  <path d="M 107 109 Q 120 107 133 109 C 131 119, 109 119, 107 109 Z" fill="#4c0519" />
+                  {/* Clean row of white upper teeth */}
+                  <path d="M 109 109 Q 120 108 131 109 L 130 114 Q 120 116 110 114 Z" fill="#ffffff" />
+                  <line x1="120" y1="109" x2="120" y2="115" stroke="#cbd5e1" strokeWidth="0.8" />
+                  <line x1="115" y1="109" x2="115" y2="114" stroke="#cbd5e1" strokeWidth="0.6" />
+                  <line x1="125" y1="109" x2="125" y2="114" stroke="#cbd5e1" strokeWidth="0.6" />
+                  {/* Lower Lip */}
+                  <path d="M 111 116 Q 120 120 129 116" stroke="#9f1239" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                  {/* Laugh Lines / Smile Creases */}
+                  <path d="M 103 106 Q 101 112 105 118" stroke="#7a4222" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
+                  <path d="M 137 106 Q 139 112 135 118" stroke="#7a4222" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
+                </g>
               ) : currentAction === 'celebrating' || currentAction === 'dancing' ? (
                 <path d="M 108 110 Q 120 124 132 110 Z" fill="#991b1b" stroke="#f43f5e" strokeWidth="1" />
               ) : (

@@ -6,28 +6,29 @@ export const ALL_PRESENTERS: Record<string, Presenter> = {
     name: 'Mr. Rifat',
     designation: 'Host & Master of Ceremonies',
     department: 'Events & Engagement',
+    photoUrl: '/images/mr_rifat.svg',
     avatarConfig: {
       gender: 'male',
-      skinTone: '#e0ac69',
-      hairColor: '#1e293b',
-      hairStyle: 'stylish',
-      facialHair: 'stubble',
+      skinTone: '#c49168',
+      hairColor: '#181517',
+      hairStyle: 'rifat-signature',
+      facialHair: 'rifat-beard',
       glasses: false,
       themeOutfit: {
         formal: {
           suitColor: '#0f172a',
           shirtColor: '#ffffff',
-          tieColor: '#10b981',
+          tieColor: '#2563eb',
           accessory: 'Lapel Mic & Gold Brooch',
         },
         casual: {
-          topColor: '#0284c7',
+          topColor: '#7baed9', // Light washed denim jacket (NASA mission style)
           bottomColor: '#1e293b',
-          topType: 'polo',
-          accessory: 'Smart Watch',
+          topType: 'tshirt',
+          accessory: 'NASA Mission Patch & Denim Jacket',
         },
         festive: {
-          costumeColor: '#059669',
+          costumeColor: '#0284c7',
           accentColor: '#fbbf24',
           costumeType: 'tropical-shirt',
           headwear: 'sunglasses-cool',
